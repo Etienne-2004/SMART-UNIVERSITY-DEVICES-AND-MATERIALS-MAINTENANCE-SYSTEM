@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head('Admin Dashboard')}"></head>
+
+<body class="app-body">
+
+    <!-- SIDEBAR -->
+    <aside th:replace="~{fragments/layout :: sidebar('dashboard')}"></aside>
+
+    <!-- MAIN -->
+    <div class="main-content" id="mainContent">
+        <!-- NAVBAR -->
+        <nav th:replace="~{fragments/layout :: navbar('Admin Dashboard')}"></nav>
+
+        <!-- PAGE CONTENT -->
+        <div class="page-content">
+            <!-- Alerts from flash -->
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i><span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show mb-4">
+                <i class="bi bi-exclamation-circle-fill me-2"></i><span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Welcome banner -->
+            <div class="nation-banner">
+                <span class="nation-banner-icon">🇷🇼</span>
+                <div>
+                    <div class="nation-banner-title"
+                        th:text="'Welcome back, ' + ${currentUser?.fullName ?: 'Administrator'} + '!'">Welcome!</div>
+                    <div class="nation-banner-sub">Rwanda National University Device & Materials Maintenance System ·
+                        Full system view</div>
+                </div>
+                <div class="ms-auto d-flex gap-3">
+                    <a th:href="@{/admin/maintenance}" class="cta-btn cta-primary"
+                        style="padding:8px 18px;font-size:12.5px">
+                        <i class="bi bi-plus-lg"></i> Assign Task
+                    </a>
+                </div>
+            </div>
+
+            <!-- KPI Grid -->
+            <div class="kpi-grid">
+                <div class="kpi-card c-indigo">
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrap"><i class="bi bi-laptop-fill" style="color:#818cf8"></i></div>
+                        <div class="kpi-trend-badge up"><i class="bi bi-arrow-up-right"></i> Active</div>
+                    </div>
+                    <div class="kpi-value count-up" th:text="${totalDevices}">0</div>
+                    <div class="kpi-label">Total Devices</div>
+                    <div class="kpi-sublabel">All registered assets</div>
+                </div>
+
+                <div class="kpi-card c-amber">
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrap"><i class="bi bi-hourglass-split" style="color:#fbbf24"></i></div>
+                        <div class="kpi-trend-badge warn" th:if="${pendingRequests > 0}"><i
+                                class="bi bi-exclamation"></i> Action</div>
+                    </div>
+                    <div class="kpi-value count-up" th:text="${pendingRequests}">0</div>
+                    <div class="kpi-label">Pending Tasks</div>
+                    <div class="kpi-sublabel">Awaiting assignment</div>
+                </div>
+
+                <div class="kpi-card c-cyan">
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrap"><i class="bi bi-tools" style="color:#22d3ee"></i></div>
+                        <div class="kpi-trend-badge up"><i class="bi bi-arrow-clockwise"></i></div>
+                    </div>
+                    <div class="kpi-value count-up" th:text="${inProgressRequests}">0</div>
+                    <div class="kpi-label">In Progress</div>
+                    <div class="kpi-sublabel">Active maintenance</div>
+                </div>
+
+                <div class="kpi-card c-emerald">
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrap"><i class="bi bi-check-circle-fill" style="color:#34d399"></i></div>
+                        <div class="kpi-trend-badge up"><i class="bi bi-arrow-up-right"></i></div>
+                    </div>
+                    <div class="kpi-value count-up" th:text="${completedRequests}">0</div>
+                    <div class="kpi-label">Completed</div>
+                    <div class="kpi-sublabel">Tasks resolved</div>
+                </div>
+            </div>
+
+            <!-- Charts + Table Row -->
+            <div class="row g-4 mb-4">
+                <div class="col-xl-4">
+                    <div class="panel" style="height:100%">
+                        <div class="panel-head">
+                            <div class="panel-title">Task Distribution</div>
+                        </div>
+                        <div class="chart-wrap h-280">
+                            <canvas id="donutChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-8">
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div class="panel-title">Recent Maintenance Requests</div>
+                            <a th:href="@{/admin/maintenance}" class="panel-link"><i class="bi bi-arrow-right"></i> View
+                                All</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>#ID</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                        <th>Status</th>
+                                        <th>Priority</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="req: ${recentRequests}">
+                                        <td th:text="'#' + ${req.id}">#1</td>
+                                        <td th:text="${req.requestType}">DEVICE</td>
+                                        <td th:text="${#strings.abbreviate(req.issueDescription,40)}">Issue</td>
+                                        <td>
+                                            <span class="badge"
+                                                th:classappend="${req.status.name() == 'PENDING' ? 'bg-warning' : 'bg-info'}"
+                                                th:text="${req.status}">PENDING</span>
+                                        </td>
+                                        <td th:text="${req.priority}">MEDIUM</td>
+                                        <td>
+                                            <a th:href="@{/admin/maintenance}"
+                                                class="btn btn-sm btn-outline-primary">View</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="panel mb-4">
+                <div class="panel-head">
+                    <div class="panel-title"><i class="bi bi-lightning-charge-fill me-2" style="color:#fbbf24"></i>Quick
+                        Actions</div>
+                </div>
+                <div class="qaction-grid">
+                    <a th:href="@{/admin/users}" class="qaction-item">
+                        <div class="qa-icon"><i class="bi bi-person-check-fill"></i></div>
+                        <span>Approve Users</span>
+                    </a>
+                    <a th:href="@{/admin/maintenance}" class="qaction-item">
+                        <div class="qa-icon"><i class="bi bi-tools"></i></div>
+                        <span>Assign Tasks</span>
+                    </a>
+                    <a th:href="@{/admin/devices}" class="qaction-item">
+                        <div class="qa-icon"><i class="bi bi-laptop-fill"></i></div>
+                        <span>Manage Devices</span>
+                    </a>
+                    <a th:href="@{/admin/materials}" class="qaction-item">
+                        <div class="qa-icon"><i class="bi bi-box-fill"></i></div>
+                        <span>Manage Materials</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
+    </div>
+
+    <!-- AI CHAT -->
+    <div th:replace="~{fragments/layout :: aiChat}"></div>
+
+    <!-- SCRIPTS -->
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <script th:inline="javascript">
+        // Chart.js implementation for the dashboard
+        const donutData = {
+            labels: ['Pending', 'In Progress', 'Completed'],
+            datasets: [{
+                data: [
+                    /*[[${pendingRequests}]]*/ 1,
+                    /*[[${inProgressRequests}]]*/ 0,
+                    /*[[${completedRequests}]]*/ 0
+                ],
+                backgroundColor: ['#f59e0b', '#06b6d4', '#10b981'],
+                borderWidth: 0
+            }]
+        };
+
+        new Chart(document.getElementById('donutChart'), {
+            type: 'doughnut',
+            data: donutData,
+            options: {
+                cutout: '70%',
+                plugins: { legend: { display: false } }
+            }
+        });
+    </script>
+</body>
+
+</html>

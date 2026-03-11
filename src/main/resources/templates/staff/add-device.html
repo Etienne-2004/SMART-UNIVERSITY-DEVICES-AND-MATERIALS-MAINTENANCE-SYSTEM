@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head('Register Device')}"></head>
+
+<body class="app-body">
+
+    <!-- SIDEBAR -->
+    <aside th:replace="~{fragments/layout :: sidebar('dashboard')}"></aside>
+
+    <!-- MAIN -->
+    <div class="main-content" id="mainContent">
+        <!-- NAVBAR -->
+        <nav th:replace="~{fragments/layout :: navbar('Register New Device')}"></nav>
+
+        <main class="page-content">
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <a th:href="@{/staff/dashboard}" class="btn btn-outline-secondary btn-sm"><i
+                        class="bi bi-arrow-left"></i> Back</a>
+                <h2 class="mb-0"><i class="bi bi-laptop-fill me-2 text-indigo"></i> Register New Device</h2>
+            </div>
+
+            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+            <div class="panel mx-auto" style="max-width: 800px">
+                <div class="panel-head">
+                    <div class="panel-title">Device Specifications</div>
+                </div>
+                <div class="p-4">
+                    <!-- Naming Convention Guide Badge -->
+                    <div class="mb-4 p-3 rounded bg-glass border border-subtle d-flex align-items-center">
+                        <i class="bi bi-info-circle-fill text-indigo me-3 fs-4"></i>
+                        <div>
+                            <div class="fw-700 small">Asset Naming Convention</div>
+                            <div class="text-secondary smaller">Follow the official university guidelines for asset IDs.
+                            </div>
+                        </div>
+                        <a href="/docs/System_Asset_Naming_Convention_Guide.pdf" target="_blank"
+                            class="ms-auto btn btn-xs btn-outline-primary">PDF Guide</a>
+                    </div>
+
+                    <form th:action="@{/staff/devices/add}" method="post">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-600">Asset Code (Device ID) <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="deviceId"
+                                    placeholder="e.g. RPKAR/CO LA01/SW05" required />
+                                <div class="form-text smaller">Unique identifier for the asset.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-600">Device Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="deviceName"
+                                    placeholder="e.g. Personal Computer 01" required />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-600">Room / Location <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="roomLocation"
+                                    placeholder="e.g. Computer Lab 01" required />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-600">Initial Condition / Description</label>
+                                <textarea class="form-control" name="description" rows="4"
+                                    placeholder="Describe the current state or any known issues..."></textarea>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3 border-top d-flex gap-3">
+                            <button type="submit" class="btn btn-primary px-4"><i class="bi bi-check2-circle me-1"></i>
+                                Register Asset</button>
+                            <a th:href="@{/staff/dashboard}" class="btn btn-outline-secondary px-4">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <!-- FOOTER -->
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
+    </div>
+
+    <!-- AI CHAT -->
+    <div th:replace="~{fragments/layout :: aiChat}"></div>
+
+    <!-- SCRIPTS -->
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+
+</html>

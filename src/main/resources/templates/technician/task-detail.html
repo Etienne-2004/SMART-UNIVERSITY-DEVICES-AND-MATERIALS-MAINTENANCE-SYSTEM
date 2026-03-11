@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head('Task Details')}"></head>
+
+<body class="app-body">
+
+    <!-- SIDEBAR -->
+    <aside th:replace="~{fragments/layout :: sidebar('dashboard')}"></aside>
+
+    <!-- MAIN -->
+    <div class="main-content" id="mainContent">
+        <!-- NAVBAR -->
+        <nav th:replace="~{fragments/layout :: navbar('Maintenance Task Detailed View')}"></nav>
+
+        <main class="page-content">
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <a th:href="@{/technician/tasks}" class="btn btn-outline-secondary btn-sm"><i
+                        class="bi bi-arrow-left"></i> Back to Tasks</a>
+                <h2 class="mb-0">Task #<span th:text="${task.id}"></span></h2>
+                <span class="badge ms-2"
+                    th:classappend="${task.status.name() == 'COMPLETED' ? 'bg-success' : 'bg-info'}"
+                    th:text="${task.status}"></span>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div class="panel-title">Technical Specifications</div>
+                        </div>
+                        <div class="p-4">
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <label class="text-muted small mb-1">Asset Category</label>
+                                    <div class="fw-700" th:text="${task.requestType}">TYPE</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="text-muted small mb-1">Priority Level</label>
+                                    <div>
+                                        <span class="badge"
+                                            th:classappend="${task.priority?.name() == 'HIGH' ? 'bg-danger' : 'bg-warning'}"
+                                            th:text="${task.priority}">PRIO</span>
+                                    </div>
+                                </div>
+                                <div class="col-12 py-3 border-top border-bottom border-secondary border-opacity-10">
+                                    <label class="text-muted small mb-1">Issue Description</label>
+                                    <p class="fs-5 lh-base mb-0" th:text="${task.issueDescription}"></p>
+                                </div>
+                                <div class="col-md-6" th:if="${task.device != null}">
+                                    <label class="text-muted small mb-1">Target Device</label>
+                                    <div class="fw-600"><i class="bi bi-laptop me-2"></i><span
+                                            th:text="${task.device.deviceName}"></span></div>
+                                    <div class="text-secondary smaller"
+                                        th:text="'S/N: ' + ${task.device.serialNumber ?: 'N/A'}"></div>
+                                </div>
+                                <div class="col-md-6" th:if="${task.material != null}">
+                                    <label class="text-muted small mb-1">Target Material</label>
+                                    <div class="fw-600"><i class="bi bi-box me-2"></i><span
+                                            th:text="${task.material.materialName}"></span></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="text-muted small mb-1">Specific Location</label>
+                                    <div class="fw-600"><i class="bi bi-geo-alt me-2"></i><span
+                                            th:text="${task.device?.roomLocation ?: task.material?.roomLocation ?: 'General Area'}"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="text-muted small mb-1">Reported By</label>
+                                    <div class="fw-600 text-indigo" th:text="${task.reportedBy?.fullName ?: 'System'}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div th:if="${task.status.name() == 'ASSIGNED'}" class="mt-4 pt-3">
+                                <form th:action="@{'/technician/tasks/' + ${task.id} + '/start'}" method="post">
+                                    <button class="btn btn-primary px-5 py-2 shadow-sm"><i
+                                            class="bi bi-play-circle me-2"></i> Start Work Order</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tech Notes if completed -->
+                    <div class="panel mt-4" th:if="${task.technicianNotes}">
+                        <div class="panel-head">
+                            <div class="panel-title">Resolution Report</div>
+                        </div>
+                        <div class="p-4 rounded bg-glass-indigo">
+                            <div class="text-secondary small mb-2">Technician's Notes:</div>
+                            <p class="mb-0 italic" th:text="${task.technicianNotes}"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="panel h-100">
+                        <div class="panel-head">
+                            <div class="panel-title">Execution Timeline</div>
+                        </div>
+                        <div class="p-4">
+                            <div class="custom-timeline">
+                                <div class="ct-item" th:classappend="${task.reportedAt != null ? 'active' : ''}">
+                                    <div class="ct-dot"></div>
+                                    <div class="ct-content">
+                                        <div class="ct-title">Issue Reported</div>
+                                        <div class="ct-time"
+                                            th:text="${task.reportedAt != null ? #temporals.format(task.reportedAt,'dd MMM HH:mm') : '—'}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ct-item" th:classappend="${task.assignedAt != null ? 'active' : ''}">
+                                    <div class="ct-dot"></div>
+                                    <div class="ct-content">
+                                        <div class="ct-title">Technician Assigned</div>
+                                        <div class="ct-time"
+                                            th:text="${task.assignedAt != null ? #temporals.format(task.assignedAt,'dd MMM HH:mm') : 'Pending'}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ct-item" th:classappend="${task.startedAt != null ? 'active' : ''}">
+                                    <div class="ct-dot"></div>
+                                    <div class="ct-content">
+                                        <div class="ct-title">Work Started</div>
+                                        <div class="ct-time"
+                                            th:text="${task.startedAt != null ? #temporals.format(task.startedAt,'dd MMM HH:mm') : 'Pending'}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ct-item" th:classappend="${task.completedAt != null ? 'active' : ''}">
+                                    <div class="ct-dot"></div>
+                                    <div class="ct-content">
+                                        <div class="ct-title">Resolved</div>
+                                        <div class="ct-time"
+                                            th:text="${task.completedAt != null ? #temporals.format(task.completedAt,'dd MMM HH:mm') : 'Pending'}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ct-item" th:classappend="${task.verifiedAt != null ? 'active' : ''}">
+                                    <div class="ct-dot"></div>
+                                    <div class="ct-content">
+                                        <div class="ct-title">Admin Verified</div>
+                                        <div class="ct-time"
+                                            th:text="${task.verifiedAt != null ? #temporals.format(task.verifiedAt,'dd MMM HH:mm') : 'Pending'}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- FOOTER -->
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
+    </div>
+
+    <!-- AI CHAT -->
+    <div th:replace="~{fragments/layout :: aiChat}"></div>
+
+    <!-- SCRIPTS -->
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+
+    <style>
+        .custom-timeline {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ct-item {
+            display: flex;
+            gap: 20px;
+            border-left: 2px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            padding-bottom: 25px;
+            padding-left: 20px;
+        }
+
+        .ct-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .ct-dot {
+            position: absolute;
+            left: -7px;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #444;
+            border: 2px solid #0f1629;
+            transition: all 0.3s;
+        }
+
+        .ct-item.active {
+            border-left-color: #6366f1;
+        }
+
+        .ct-item.active .ct-dot {
+            background: #6366f1;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+        }
+
+        .ct-title {
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .ct-time {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .bg-glass-indigo {
+            background: rgba(99, 102, 241, 0.05);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+        }
+    </style>
+</body>
+
+</html>

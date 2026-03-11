@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${pageTitle != null ? pageTitle + ' – Smart University MMS' : 'Smart University MMS'}">Smart
+        University MMS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <link th:href="@{/css/main.css}" rel="stylesheet" />
+    <th:block th:replace="${extraHead} ?: _"></th:block>
+</head>
+
+<body class="app-body">
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="logo-icon"><i class="bi bi-building-gear"></i></div>
+                <div class="logo-text">
+                    <span class="logo-title">SmartUni</span>
+                    <span class="logo-subtitle">MMS</span>
+                </div>
+            </div>
+            <button class="sidebar-toggle" onclick="toggleSidebar()">
+                <i class="bi bi-chevron-left" id="sidebarToggleIcon"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <!-- ADMIN NAV -->
+            <div th:if="${currentRole == 'ADMIN'}">
+                <div class="nav-section-label">Administration</div>
+                <a th:href="@{/admin/dashboard}" class="nav-link"
+                    th:classappend="${activePage == 'dashboard' ? 'active' : ''}">
+                    <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+                </a>
+                <a th:href="@{/admin/users}" class="nav-link" th:classappend="${activePage == 'users' ? 'active' : ''}">
+                    <i class="bi bi-people"></i><span>Users</span>
+                    <span th:if="${pendingUsers > 0}" class="badge-pill" th:text="${pendingUsers}">0</span>
+                </a>
+                <a th:href="@{/admin/devices}" class="nav-link"
+                    th:classappend="${activePage == 'devices' ? 'active' : ''}">
+                    <i class="bi bi-laptop"></i><span>Devices</span>
+                </a>
+                <a th:href="@{/admin/materials}" class="nav-link"
+                    th:classappend="${activePage == 'materials' ? 'active' : ''}">
+                    <i class="bi bi-box"></i><span>Materials</span>
+                </a>
+                <a th:href="@{/admin/maintenance}" class="nav-link"
+                    th:classappend="${activePage == 'maintenance' ? 'active' : ''}">
+                    <i class="bi bi-tools"></i><span>Maintenance</span>
+                </a>
+                <a th:href="@{/admin/analytics}" class="nav-link"
+                    th:classappend="${activePage == 'analytics' ? 'active' : ''}">
+                    <i class="bi bi-graph-up-arrow"></i><span>Analytics</span>
+                </a>
+                <a href="/docs/System_Asset_Naming_Convention_Guide.pdf" target="_blank" class="nav-link">
+                    <i class="bi bi-file-earmark-pdf-fill"></i><span>Naming Guide</span>
+                </a>
+            </div>
+
+            <!-- TECHNICIAN NAV -->
+            <div th:if="${currentRole == 'TECHNICIAN'}">
+                <div class="nav-section-label">Technician</div>
+                <a th:href="@{/technician/dashboard}" class="nav-link"
+                    th:classappend="${activePage == 'dashboard' ? 'active' : ''}">
+                    <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+                </a>
+                <a th:href="@{/technician/tasks}" class="nav-link"
+                    th:classappend="${activePage == 'tasks' ? 'active' : ''}">
+                    <i class="bi bi-list-task"></i><span>My Tasks</span>
+                </a>
+                <a href="/docs/System_Asset_Naming_Convention_Guide.pdf" target="_blank" class="nav-link">
+                    <i class="bi bi-file-earmark-pdf-fill"></i><span>Naming Guide</span>
+                </a>
+            </div>
+
+            <!-- STAFF NAV -->
+            <div th:if="${currentRole == 'STAFF'}">
+                <div class="nav-section-label">Staff</div>
+                <a th:href="@{/staff/dashboard}" class="nav-link"
+                    th:classappend="${activePage == 'dashboard' ? 'active' : ''}">
+                    <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+                </a>
+                <a th:href="@{/staff/devices/add}" class="nav-link"
+                    th:classappend="${activePage == 'add-device' ? 'active' : ''}">
+                    <i class="bi bi-laptop-fill"></i><span>Register Device</span>
+                </a>
+                <a th:href="@{/staff/materials/add}" class="nav-link"
+                    th:classappend="${activePage == 'add-material' ? 'active' : ''}">
+                    <i class="bi bi-box-fill"></i><span>Report Material</span>
+                </a>
+                <a href="/docs/System_Asset_Naming_Convention_Guide.pdf" target="_blank" class="nav-link">
+                    <i class="bi bi-file-earmark-pdf-fill"></i><span>Naming Guide</span>
+                </a>
+            </div>
+
+            <!-- CLEANER NAV -->
+            <div th:if="${currentRole == 'CLEANER_STUDENT'}">
+                <div class="nav-section-label">Cleaner / Student</div>
+                <a th:href="@{/cleaner/dashboard}" class="nav-link"
+                    th:classappend="${activePage == 'dashboard' ? 'active' : ''}">
+                    <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+                </a>
+                <a th:href="@{/cleaner/report}" class="nav-link"
+                    th:classappend="${activePage == 'report' ? 'active' : ''}">
+                    <i class="bi bi-exclamation-triangle"></i><span>Report Damage</span>
+                </a>
+                <a href="/docs/System_Asset_Naming_Convention_Guide.pdf" target="_blank" class="nav-link">
+                    <i class="bi bi-file-earmark-pdf-fill"></i><span>Naming Guide</span>
+                </a>
+            </div>
+
+            <div class="nav-divider"></div>
+            <a href="/logout" class="nav-link nav-link-danger">
+                <i class="bi bi-box-arrow-right"></i><span>Logout</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content" id="mainContent">
+        <!-- Top Header Bar -->
+        <header class="top-header">
+            <div class="header-left">
+                <button class="btn-hamburger" onclick="toggleSidebar()">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div class="breadcrumb-area">
+                    <h1 class="page-title" th:text="${pageTitle ?: 'Dashboard'}">Dashboard</h1>
+                </div>
+            </div>
+            <div class="header-right">
+                <!-- Notifications Bell -->
+                <div class="dropdown">
+                    <button class="btn-icon" data-bs-toggle="dropdown">
+                        <i class="bi bi-bell"></i>
+                        <span class="notif-badge" th:if="${unreadCount > 0}" th:text="${unreadCount}">0</span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end notif-dropdown">
+                        <div class="notif-header">
+                            <span>Notifications</span>
+                            <a href="#" class="notif-mark-read">Mark all read</a>
+                        </div>
+                        <div th:each="notif: ${notifications}" class="notif-item"
+                            th:classappend="${!notif.read ? 'unread' : ''}">
+                            <div class="notif-title" th:text="${notif.title}">Title</div>
+                            <div class="notif-msg" th:text="${notif.message}">Message</div>
+                            <div class="notif-time" th:text="${#temporals.format(notif.createdAt, 'dd MMM, HH:mm')}">
+                                Time</div>
+                        </div>
+                        <div th:if="${#lists.isEmpty(notifications)}" class="notif-empty">
+                            No notifications
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Profile -->
+                <div class="dropdown">
+                    <button class="user-profile-btn" data-bs-toggle="dropdown">
+                        <div class="user-avatar">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                        <div class="user-info">
+                            <span class="user-name" th:text="${currentUser?.fullName ?: 'User'}">User</span>
+                            <span class="user-role" th:text="${currentUser?.role}">Role</span>
+                        </div>
+                        <i class="bi bi-chevron-down"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="/logout"><i class="bi bi-box-arrow-right me-2"></i>Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <!-- Flash messages -->
+        <div class="alert-banner" th:if="${success}">
+            <div class="alert alert-success alert-dismissible fade show mx-4 mt-3" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i><span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        </div>
+        <div class="alert-banner" th:if="${error}">
+            <div class="alert alert-danger alert-dismissible fade show mx-4 mt-3" role="alert">
+                <i class="bi bi-exclamation-circle-fill me-2"></i><span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        </div>
+
+        <!-- Page Content -->
+        <main class="page-content">
+            <th:block th:replace="${content}"></th:block>
+        </main>
+    </div> <!-- Close main-content -->
+    <div class="ai-chat-panel">
+        <div class="ai-chat-header">
+            <span class="user-name" th:text="${currentUser?.fullName ?: 'User'}"></span>
+            <span class="user-role" th:text="${currentUser?.role}"></span>
+            <h6><i class="bi bi-robot"></i> AI Assistant</h6>
+        </div>
+        <div class="ai-chat-body" id="aiChatBody">
+            <div class="ai-chat-message ai">
+                Hi <strong><span th:text="${currentUser?.fullName ?: 'User'}"></span></strong>! I am your SmartUni
+                AI Assistant.
+                You can ask me questions to help you make decisions. For example: "What is a reliable room
+                temperature for storing electronic devices like projectors and PCs?"
+            </div>
+        </div>
+        <div class="ai-chat-input-area">
+            <input type="text" id="aiChatInput" placeholder="Ask AI a question..." onkeypress="handleAIPress(event)" />
+            <button onclick="sendAIMessage()"><i class="bi bi-send-fill"></i></button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <script th:src="@{/js/main.js}"></script>
+    <th:block th:replace="${extraScript} ?: _"></th:block>
+</body>
+
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head('User Management')}"></head>
+
+<body class="app-body">
+
+    <!-- SIDEBAR -->
+    <aside th:replace="~{fragments/layout :: sidebar('users')}"></aside>
+
+    <!-- MAIN -->
+    <div class="main-content" id="mainContent">
+        <!-- NAVBAR -->
+        <nav th:replace="~{fragments/layout :: navbar('User Management')}"></nav>
+
+        <main class="page-content">
+            <h2 class="mb-4 d-flex align-items-center"><i class="bi bi-people-fill me-2 text-indigo"></i> User
+                Management</h2>
+
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show mb-4">
+                <i class="bi bi-check-circle-fill me-2"></i><span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Pending Approvals -->
+            <div class="panel mb-4" th:if="${not #lists.isEmpty(pendingUsers)}">
+                <div class="panel-head">
+                    <div class="panel-title text-warning"><i class="bi bi-person-exclamation me-2"></i>Pending Approvals
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>University</th>
+                                <th>Registered</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="u: ${pendingUsers}">
+                                <td th:text="${u.fullName}"></td>
+                                <td th:text="${u.email}"></td>
+                                <td><span class="badge bg-secondary" th:text="${u.role}"></span></td>
+                                <td th:text="${u.university?.abbreviation ?: '—'}"></td>
+                                <td th:text="${#temporals.format(u.createdAt,'dd MMM yyyy')}"></td>
+                                <td>
+                                    <form th:action="@{'/admin/users/' + ${u.id} + '/approve'}" method="post"
+                                        style="display:inline">
+                                        <button type="submit" class="btn btn-sm btn-success"><i class="bi bi-check"></i>
+                                            Approve</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- All Users -->
+            <div class="panel">
+                <div class="panel-head">
+                    <div class="panel-title">All Registered Users</div>
+                    <div class="search-input-wrap">
+                        <i class="bi bi-search"></i>
+                        <input type="text" class="form-control form-control-sm" placeholder="Search..."
+                            oninput="filterUsers(this.value)" />
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table" id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>University</th>
+                                <th>Status</th>
+                                <th>Last Login</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="u: ${users}">
+                                <td th:text="${u.id}" class="text-muted small"></td>
+                                <td th:text="${u.fullName}"></td>
+                                <td th:text="${u.email}"></td>
+                                <td th:text="${u.role}"></td>
+                                <td th:text="${u.university?.abbreviation ?: '—'}"></td>
+                                <td>
+                                    <span class="badge"
+                                        th:classappend="${u.accountStatus.name() == 'ACTIVE' ? 'bg-success' : 'bg-warning'}"
+                                        th:text="${u.accountStatus}"></span>
+                                </td>
+                                <td
+                                    th:text="${u.lastLogin != null ? #temporals.format(u.lastLogin,'dd MMM HH:mm') : 'Never'}">
+                                </td>
+                                <td>
+                                    <form th:if="${u.accountStatus.name() == 'ACTIVE'}"
+                                        th:action="@{'/admin/users/' + ${u.id} + '/suspend'}" method="post"
+                                        style="display:inline">
+                                        <button class="btn btn-sm btn-outline-danger"><i class="bi bi-pause"></i>
+                                            Suspend</button>
+                                    </form>
+                                    <form th:if="${u.accountStatus.name() != 'ACTIVE'}"
+                                        th:action="@{'/admin/users/' + ${u.id} + '/approve'}" method="post"
+                                        style="display:inline">
+                                        <button class="btn btn-sm btn-outline-success"><i class="bi bi-play"></i>
+                                            Activate</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <!-- FOOTER -->
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
+    </div>
+
+    <!-- AI CHAT -->
+    <div th:replace="~{fragments/layout :: aiChat}"></div>
+
+    <!-- SCRIPTS -->
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+
+    <script>
+        function filterUsers(q) {
+            q = q.toLowerCase();
+            document.querySelectorAll('#usersTable tbody tr').forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+        }
+    </script>
+</body>
+
+</html>

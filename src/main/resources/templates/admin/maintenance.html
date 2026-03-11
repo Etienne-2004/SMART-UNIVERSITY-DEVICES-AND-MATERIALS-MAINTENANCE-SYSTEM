@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head('Maintenance Tasks')}"></head>
+
+<body class="app-body">
+
+    <!-- SIDEBAR -->
+    <aside th:replace="~{fragments/layout :: sidebar('maintenance')}"></aside>
+
+    <!-- MAIN -->
+    <div class="main-content" id="mainContent">
+        <!-- NAVBAR -->
+        <nav th:replace="~{fragments/layout :: navbar('Maintenance Operations')}"></nav>
+
+        <main class="page-content">
+            <h2 class="mb-4 d-flex align-items-center"><i class="bi bi-tools text-indigo me-2"></i> Maintenance Tasks
+            </h2>
+
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show mb-4">
+                <i class="bi bi-check-circle-fill me-2"></i><span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Task Assignment Grid/Table -->
+            <div class="panel">
+                <div class="panel-head">
+                    <div class="panel-title">All Maintenance Requests</div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Item</th>
+                                <th>Issue</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Assigned To</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="r: ${requests}">
+                                <td th:text="'#' + ${r.id}" class="fw-700"></td>
+                                <td
+                                    th:text="${r.requestType + ': ' + (r.device?.name ?: r.material?.name ?: 'Common')}">
+                                    Item</td>
+                                <td th:text="${#strings.abbreviate(r.issueDescription, 30)}">Issue</td>
+                                <td>
+                                    <span class="badge"
+                                        th:classappend="${r.priority.name() == 'HIGH' ? 'bg-danger' : (r.priority.name() == 'MEDIUM' ? 'bg-warning' : 'bg-info')}"
+                                        th:text="${r.priority}">PRIO</span>
+                                </td>
+                                <td>
+                                    <span class="badge"
+                                        th:classappend="${r.status.name() == 'COMPLETED' ? 'bg-success' : 'bg-secondary'}"
+                                        th:text="${r.status}">STATUS</span>
+                                </td>
+                                <td th:text="${r.technician?.fullName ?: 'Unassigned'}" class="text-indigo"></td>
+                                <td th:text="${#temporals.format(r.reportedAt,'dd MMM HH:mm')}">Date</td>
+                                <td>
+                                    <!-- Assign Button triggers modal -->
+                                    <button th:if="${r.status.name() == 'PENDING'}" class="btn btn-sm btn-primary"
+                                        data-bs-toggle="modal" th:data-bs-target="'#assignModal' + ${r.id}">
+                                        <i class="bi bi-person-plus"></i> Assign
+                                    </button>
+                                    <form th:if="${r.status.name() == 'COMPLETED'}"
+                                        th:action="@{'/admin/maintenance/' + ${r.id} + '/verify'}" method="post">
+                                        <button class="btn btn-sm btn-success"><i class="bi bi-check-all"></i>
+                                            Verify</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Modals for assignment -->
+            <div th:each="r: ${requests}" th:if="${r.status.name() == 'PENDING'}" class="modal fade"
+                th:id="'assignModal' + ${r.id}" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <form th:action="@{'/admin/maintenance/' + ${r.id} + '/assign'}" method="post">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Assign Technician to Task #<span th:text="${r.id}"></span></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Select Technician</label>
+                                    <select name="technicianId" class="form-select" required>
+                                        <option value="">-- Choose One --</option>
+                                        <option th:each="t: ${technicians}" th:value="${t.id}" th:text="${t.fullName}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Due Date (Optional)</label>
+                                    <input type="datetime-local" name="dueDate" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary"
+                                    data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Confirm Assignment</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- FOOTER -->
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
+    </div>
+
+    <!-- AI CHAT -->
+    <div th:replace="~{fragments/layout :: aiChat}"></div>
+
+    <!-- SCRIPTS -->
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+
+</html>
