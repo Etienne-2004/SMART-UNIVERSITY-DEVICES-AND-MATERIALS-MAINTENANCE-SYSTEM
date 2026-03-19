@@ -193,6 +193,23 @@ public class MaintenanceService {
         return maintenanceRequestRepository.findByAssignedTechnicianId(technicianId);
     }
 
+    // ── Technician Task Methods ─────────────────────────────────────────────────────
+
+    public List<MaintenanceRequest> getAssignedTasks(Long technicianId) {
+        return maintenanceRequestRepository.findByAssignedTechnicianIdAndStatus(
+                technicianId, MaintenanceRequest.TaskStatus.ASSIGNED);
+    }
+
+    public List<MaintenanceRequest> getInProgressTasks(Long technicianId) {
+        return maintenanceRequestRepository.findByAssignedTechnicianIdAndStatus(
+                technicianId, MaintenanceRequest.TaskStatus.IN_PROGRESS);
+    }
+
+    public List<MaintenanceRequest> getCompletedTasks(Long technicianId) {
+        return maintenanceRequestRepository.findByAssignedTechnicianIdAndStatus(
+                technicianId, MaintenanceRequest.TaskStatus.COMPLETED);
+    }
+
     public List<Object[]> getTechnicianPerformance() {
         return maintenanceRequestRepository.getTechnicianPerformance();
     }

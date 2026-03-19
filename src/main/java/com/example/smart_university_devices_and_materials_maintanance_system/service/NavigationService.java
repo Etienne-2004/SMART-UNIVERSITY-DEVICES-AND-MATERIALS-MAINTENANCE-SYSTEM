@@ -154,76 +154,75 @@ public class NavigationService {
     }
 
     /**
-     * Technician-specific navigation with admin-style structure
+     * Technician-specific navigation with unique technician-focused items
      */
     private List<NavigationItem> getTechnicianNavigation(User technician, String currentPath) {
         List<NavigationItem> items = new ArrayList<>();
 
-        // Get real-time counts for badges
-        int pendingUsers = userService.getPendingApprovals().size();
-        int pendingDevices = deviceService.getPendingApproval().size();
-        int pendingMaterials = materialService.getPendingApproval().size();
         int assignedTasks = maintenanceService.getAssignedTasks(technician.getId()).size();
+        int inProgressTasks = maintenanceService.getInProgressTasks(technician.getId()).size();
+        int completedTasks = maintenanceService.getCompletedTasks(technician.getId()).size();
+        int pendingDevices = deviceService.getPendingApproval().size();
         int unreadNotifications = notificationService.countUnread(technician.getId());
 
         // Dashboard - Always first with notification badge
         items.add(new NavigationItem(
-            "Dashboard", 
+            "My Dashboard", 
             "bi-speedometer2", 
             "/technician/dashboard", 
             unreadNotifications > 0 ? String.valueOf(unreadNotifications) : null,
             currentPath.contains("/technician/dashboard"),
-            "Technical operations overview"
+            "Technician task overview & performance"
         ));
 
-        // User Management - Shows pending count (technician view)
+        // My Tasks - Shows assigned tasks
         items.add(new NavigationItem(
-            "Users", 
-            "bi-people-fill", 
-            "/technician/users", 
-            pendingUsers > 0 ? String.valueOf(pendingUsers) : null,
-            currentPath.contains("/technician/users"),
-            "View user accounts & requests"
-        ));
-
-        // Device Management - Shows pending approvals
-        items.add(new NavigationItem(
-            "Devices", 
-            "bi-laptop-fill", 
-            "/technician/devices", 
-            pendingDevices > 0 ? String.valueOf(pendingDevices) : null,
-            currentPath.contains("/technician/devices"),
-            "Monitor device status & repairs"
-        ));
-
-        // Material Management - Shows pending approvals
-        items.add(new NavigationItem(
-            "Materials", 
-            "bi-box-fill", 
-            "/technician/materials", 
-            pendingMaterials > 0 ? String.valueOf(pendingMaterials) : null,
-            currentPath.contains("/technician/materials"),
-            "Manage learning materials"
-        ));
-
-        // Maintenance Operations - Shows assigned tasks
-        items.add(new NavigationItem(
-            "Maintenance", 
-            "bi-tools", 
-            "/technician/maintenance", 
+            "My Tasks", 
+            "bi-clipboard-check", 
+            "/technician/tasks", 
             assignedTasks > 0 ? String.valueOf(assignedTasks) : null,
-            currentPath.contains("/technician/maintenance"),
-            "View & manage maintenance tasks"
+            currentPath.contains("/technician/tasks"),
+            "Assigned maintenance tasks"
         ));
 
-        // Analytics - Technical insights
+        // In Progress - Shows current work
         items.add(new NavigationItem(
-            "Analytics", 
-            "bi-bar-chart-fill", 
-            "/technician/analytics", 
+            "In Progress", 
+            "bi-arrow-repeat", 
+            "/technician/in-progress", 
+            inProgressTasks > 0 ? String.valueOf(inProgressTasks) : null,
+            currentPath.contains("/technician/in-progress"),
+            "Currently working on"
+        ));
+
+        // Completed - Shows finished work
+        items.add(new NavigationItem(
+            "Completed", 
+            "bi-check-circle", 
+            "/technician/completed", 
+            String.valueOf(completedTasks),
+            currentPath.contains("/technician/completed"),
+            "Task history & achievements"
+        ));
+
+        // Device Issues - Shows pending device problems
+        items.add(new NavigationItem(
+            "Device Issues", 
+            "bi-cpu", 
+            "/technician/device-issues", 
+            pendingDevices > 0 ? String.valueOf(pendingDevices) : null,
+            currentPath.contains("/technician/device-issues"),
+            "Device maintenance requests"
+        ));
+
+        // Report Issue - Technician can report issues
+        items.add(new NavigationItem(
+            "Report Issue", 
+            "bi-exclamation-triangle", 
+            "/technician/report", 
             null,
-            currentPath.contains("/technician/analytics"),
-            "Technical performance metrics"
+            currentPath.contains("/technician/report"),
+            "Report new maintenance issues"
         ));
 
         // Learning Centre - Training resources
