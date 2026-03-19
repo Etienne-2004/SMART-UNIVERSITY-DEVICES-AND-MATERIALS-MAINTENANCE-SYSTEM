@@ -16,7 +16,7 @@
         <main class="page-content">
             <div th:if="${success}" class="alert alert-success alert-dismissible fade show mb-4">
                 <i class="bi bi-check-circle-fill me-2"></i><span th:text="${success}"></span>
-                <button class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
 
             <!-- Welcome Banner -->
@@ -48,7 +48,7 @@
                 <div class="kpi-card c-cyan">
                     <div class="kpi-header">
                         <div class="kpi-icon-wrap"><i class="bi bi-tools" style="color:#22d3ee"></i></div>
-                        <span class="badge bg-info text-dark">Active</span>
+                        <span class="badge bg-info">Active</span>
                     </div>
                     <div class="kpi-value count-up" th:text="${inProgressCount}">0</div>
                     <div class="kpi-label">In Progress</div>

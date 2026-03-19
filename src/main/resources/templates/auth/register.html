@@ -15,22 +15,78 @@
     <style>
         .select2-container .select2-selection--single {
             height: 52px !important;
-            border: 1px solid rgba(226, 232, 240, 0.8) !important;
+            border: 1px solid rgba(99, 102, 241, 0.3) !important;
             border-radius: 12px !important;
-            display: flex;
-            align-items: center;
-            background-color: #f8fafc;
+            background-color: rgba(6, 12, 24, 0.95) !important;
+            color: #e2e8f0 !important;
+            backdrop-filter: blur(10px);
         }
 
         .select2-container--default .select2-selection--single .select2-selection__arrow {
             height: 50px !important;
             right: 14px !important;
+            color: #94a3b8 !important;
         }
 
         .select2-container--default .select2-selection--single .select2-selection__rendered {
-            color: #334155 !important;
+            color: #e2e8f0 !important;
             font-size: 14.5px;
             padding-left: 14px;
+            line-height: 50px;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__placeholder {
+            color: #64748b !important;
+        }
+
+        /* Dropdown styles */
+        .select2-dropdown {
+            background-color: rgba(6, 12, 24, 0.98) !important;
+            border: 1px solid rgba(99, 102, 241, 0.3) !important;
+            border-radius: 12px !important;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+            backdrop-filter: blur(20px);
+        }
+
+        .select2-results__options {
+            background-color: transparent !important;
+        }
+
+        .select2-results__option {
+            background-color: transparent !important;
+            color: #94a3b8 !important;
+            padding: 12px 14px !important;
+            border-radius: 8px !important;
+            margin: 4px 8px !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .select2-results__option:hover {
+            background-color: rgba(99, 102, 241, 0.2) !important;
+            color: #e2e8f0 !important;
+        }
+
+        .select2-results__option--highlighted {
+            background-color: rgba(99, 102, 241, 0.3) !important;
+            color: #ffffff !important;
+        }
+
+        .select2-results__option--selected {
+            background-color: rgba(99, 102, 241, 0.4) !important;
+            color: #a5b4fc !important;
+        }
+
+        /* Search box */
+        .select2-search__field {
+            background-color: rgba(10, 17, 40, 0.8) !important;
+            border: 1px solid rgba(99, 102, 241, 0.2) !important;
+            color: #e2e8f0 !important;
+            border-radius: 8px !important;
+            padding: 8px 12px !important;
+        }
+
+        .select2-search__field::placeholder {
+            color: #64748b !important;
         }
     </style>
 </head>
@@ -118,6 +174,7 @@
                                 <option th:each="uni : ${universities}" th:value="${uni.id}"
                                     th:text="${uni.name + ' (' + uni.abbreviation + ')'}">University</option>
                             </select>
+                            <small class="text-muted" style="font-size: 11px;">Can't find your university? Type to add new</small>
                         </div>
                         <div class="col-12">
                             <label class="form-label"
@@ -126,6 +183,7 @@
                             <select class="form-select select2-searchable" id="collegeId" name="collegeId">
                                 <option value="">Select College (optional)</option>
                             </select>
+                            <small class="text-muted" style="font-size: 11px;">Can't find your college? Type to add new</small>
                         </div>
                     </div>
 
@@ -143,35 +201,118 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         $(document).ready(function () {
-            $('.select2-searchable').select2({
-                placeholder: "Search for an option",
-                width: '100%'
+            // Initialize university dropdown with tagging
+            $('#universityId').select2({
+                placeholder: "Search or type to add new university",
+                width: '100%',
+                tags: true,
+                createTag: function (params) {
+                    if (params.term.trim() === '') {
+                        return null;
+                    }
+                    return {
+                        id: 'new_' + params.term,
+                        text: params.term + ' (New)',
+                        newOption: true
+                    }
+                },
+                templateResult: function (data) {
+                    if (data.newOption) {
+                        return $('<span class="select2-new-option"><i class="bi bi-plus-circle me-1"></i>' + data.text + '</span>');
+                    }
+                    return data.text;
+                }
+            });
+
+            // Initialize college dropdown with tagging
+            $('#collegeId').select2({
+                placeholder: "Search or type to add new college",
+                width: '100%',
+                tags: true,
+                createTag: function (params) {
+                    if (params.term.trim() === '') {
+                        return null;
+                    }
+                    return {
+                        id: 'new_' + params.term,
+                        text: params.term + ' (New)',
+                        newOption: true
+                    }
+                },
+                templateResult: function (data) {
+                    if (data.newOption) {
+                        return $('<span class="select2-new-option"><i class="bi bi-plus-circle me-1"></i>' + data.text + '</span>');
+                    }
+                    return data.text;
+                }
             });
         });
 
         async function loadColleges(universityId) {
             const sel = document.getElementById('collegeId');
-            sel.innerHTML = '<option value="">Loading...</option>';
-            $('#collegeId').trigger('change'); // Update select2
-
-            if (!universityId) {
+            
+            // Clear existing options
+            $('#collegeId').empty().trigger('change');
+            
+            if (!universityId || universityId.startsWith('new_')) {
+                // For new universities, allow adding colleges manually
                 sel.innerHTML = '<option value="">Select College (optional)</option>';
                 $('#collegeId').trigger('change');
                 return;
             }
 
-            const res = await fetch(`/auth/colleges/${universityId}`);
-            const colleges = await res.json();
+            sel.innerHTML = '<option value="">Loading...</option>';
+            $('#collegeId').trigger('change');
 
-            sel.innerHTML = '<option value="">Select College (optional)</option>';
-            colleges.forEach(c => {
-                const opt = document.createElement('option');
-                opt.value = c.id;
-                opt.textContent = `${c.name} (${c.abbreviation})`;
-                sel.appendChild(opt);
-            });
-            $('#collegeId').trigger('change'); // Refresh select2 with new options
+            try {
+                const res = await fetch(`/auth/colleges/${universityId}`);
+                const colleges = await res.json();
+
+                sel.innerHTML = '<option value="">Select College (optional)</option>';
+                colleges.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.id;
+                    opt.textContent = `${c.name} (${c.abbreviation})`;
+                    sel.appendChild(opt);
+                });
+                $('#collegeId').trigger('change');
+            } catch (error) {
+                console.error('Error loading colleges:', error);
+                sel.innerHTML = '<option value="">Select College (optional)</option>';
+                $('#collegeId').trigger('change');
+            }
         }
+
+        // Handle form submission to process new universities/colleges
+        $('#registerForm').on('submit', function(e) {
+            const universityVal = $('#universityId').val();
+            const collegeVal = $('#collegeId').val();
+            
+            // Add hidden fields for new universities/colleges if needed
+            if (universityVal && universityVal.startsWith('new_')) {
+                const universityName = universityVal.replace('new_', '').replace(' (New)', '');
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'newUniversityName',
+                    value: universityName
+                }).appendTo('#registerForm');
+                
+                // Clear the original field value
+                $('#universityId').val('');
+            }
+            
+            if (collegeVal && collegeVal.startsWith('new_')) {
+                const collegeName = collegeVal.replace('new_', '').replace(' (New)', '');
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'newCollegeName',
+                    value: collegeName
+                }).appendTo('#registerForm');
+                
+                // Clear the original field value
+                $('#collegeId').val('');
+            }
+        });
     </script>
 </body>
 

@@ -65,6 +65,11 @@
                     <span class="nav-icon"><i class="bi bi-bar-chart-line-fill"></i></span>
                     <span class="nav-label">Analytics</span>
                 </a>
+                <div class="nav-group-label" style="margin-top:12px">Learning</div>
+                <a th:href="@{/learning}" class="nav-item" th:classappend="${activeItem == 'learning' ? 'active' : ''}">
+                    <span class="nav-icon"><i class="bi bi-mortarboard-fill"></i></span>
+                    <span class="nav-label">Learning Centre</span>
+                </a>
             </th:block>
 
             <!-- Staff Nav -->
@@ -85,6 +90,11 @@
                     <span class="nav-icon"><i class="bi bi-box-fill"></i></span>
                     <span class="nav-label">Report Material</span>
                 </a>
+                <div class="nav-group-label" style="margin-top:12px">Learning</div>
+                <a th:href="@{/learning}" class="nav-item" th:classappend="${activeItem == 'learning' ? 'active' : ''}">
+                    <span class="nav-icon"><i class="bi bi-mortarboard-fill"></i></span>
+                    <span class="nav-label">Learning Centre</span>
+                </a>
             </th:block>
 
             <!-- Technician Nav -->
@@ -100,6 +110,11 @@
                     <span class="nav-icon"><i class="bi bi-tools"></i></span>
                     <span class="nav-label">My Tasks</span>
                 </a>
+                <div class="nav-group-label" style="margin-top:12px">Learning</div>
+                <a th:href="@{/learning}" class="nav-item" th:classappend="${activeItem == 'learning' ? 'active' : ''}">
+                    <span class="nav-icon"><i class="bi bi-mortarboard-fill"></i></span>
+                    <span class="nav-label">Learning Centre</span>
+                </a>
             </th:block>
 
             <!-- Cleaner Nav -->
@@ -114,6 +129,11 @@
                     th:classappend="${activeItem == 'report' ? 'active' : ''}">
                     <span class="nav-icon"><i class="bi bi-plus-circle-fill"></i></span>
                     <span class="nav-label">New Report</span>
+                </a>
+                <div class="nav-group-label" style="margin-top:12px">Learning</div>
+                <a th:href="@{/learning}" class="nav-item" th:classappend="${activeItem == 'learning' ? 'active' : ''}">
+                    <span class="nav-icon"><i class="bi bi-mortarboard-fill"></i></span>
+                    <span class="nav-label">Learning Centre</span>
                 </a>
             </th:block>
 
@@ -144,6 +164,24 @@
                 Rwanda</div>
         </div>
         <div class="navbar-right">
+            <!-- Main Navigation Links -->
+            <div class="navbar-nav-links">
+                <a th:href="@{/admin/dashboard}" class="navbar-link" th:classappend="${pageTitle == 'Admin Dashboard' ? 'active' : ''}">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+                <a th:href="@{/admin/users}" class="navbar-link" th:classappend="${pageTitle == 'User Management' ? 'active' : ''}">
+                    <i class="bi bi-people-fill"></i> Users
+                </a>
+                <a th:href="@{/admin/devices}" class="navbar-link" th:classappend="${pageTitle == 'Device Management' ? 'active' : ''}">
+                    <i class="bi bi-laptop-fill"></i> Devices
+                </a>
+                <a th:href="@{/admin/materials}" class="navbar-link" th:classappend="${pageTitle == 'Material Management' ? 'active' : ''}">
+                    <i class="bi bi-box-fill"></i> Materials
+                </a>
+                <a th:href="@{/admin/maintenance}" class="navbar-link" th:classappend="${pageTitle == 'Maintenance' ? 'active' : ''}">
+                    <i class="bi bi-tools"></i> Maintenance
+                </a>
+            </div>
             <!-- Profile -->
             <div class="dropdown">
                 <button class="user-profile-drop" data-bs-toggle="dropdown">
@@ -154,6 +192,9 @@
                     </div>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end dd-menu-custom">
+                    <li><a class="dropdown-item" th:href="@{/admin/profile}"><i class="bi bi-person me-2"></i>Profile</a></li>
+                    <li><a class="dropdown-item" th:href="@{/admin/settings}"><i class="bi bi-gear me-2"></i>Settings</a></li>
+                    <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item text-danger" href="/logout"><i
                                 class="bi bi-box-arrow-right me-2"></i>Sign Out</a></li>
                 </ul>
@@ -164,32 +205,64 @@
     <!-- ════ AI CHAT FRAGMENT ════ -->
     <div th:fragment="aiChat" class="ai-chat-panel">
         <div class="ai-chat-header">
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <div class="ai-status-dot"></div>
+                <span style="font-size:.7rem;opacity:.7;letter-spacing:.05em">AI ONLINE</span>
+            </div>
+            <h6 style="margin:0 0 4px"><i class="bi bi-cpu-fill me-1"></i> SmartUni AI Assistant</h6>
             <div class="user-name" th:text="${currentUser?.fullName}">Administrator</div>
             <div class="user-role" th:text="${currentRole}">System Admin</div>
-            <h6><i class="bi bi-cpu-fill"></i> AI MAINTENANCE ASSISTANT</h6>
         </div>
         <div class="ai-chat-body" id="aiChatBody">
             <div class="ai-chat-message ai">
-                Hello <strong th:text="${currentUser?.fullName}">User</strong>! I am your AI assistant. I can help you
-                with
-                maintenance decisions and optimal hardware conditions.
+                Hello <strong th:text="${currentUser?.fullName}">User</strong>! 👋 I'm your SmartUni AI. Ask me about
+                maintenance, devices, materials, roles, or the learning centre.
             </div>
         </div>
+        <!-- Quick Chip Suggestions -->
+        <div class="ai-chips" id="aiChips">
+            <button class="ai-chip" onclick="chipAsk('device temperature')">🌡️ Device temp</button>
+            <button class="ai-chip" onclick="chipAsk('maintenance lifecycle')">🔧 Maintenance</button>
+            <button class="ai-chip" onclick="chipAsk('material stock')">📦 Materials</button>
+            <button class="ai-chip" onclick="chipAsk('audit log security')">🔐 Security</button>
+            <button class="ai-chip" onclick="chipAsk('learning centre')">🎓 Learning</button>
+        </div>
         <div class="ai-chat-input-area">
-            <input type="text" id="aiChatInput" placeholder="Ask AI anything..." onkeypress="handleAIPress(event)" />
-            <button onclick="sendAIMessage()"><i class="bi bi-send-fill"></i></button>
+            <input type="text" id="aiChatInput" placeholder="Ask AI anything…" onkeypress="handleAIPress(event)" />
+            <button onclick="sendAIMessage()" title="Send"><i class="bi bi-send-fill"></i></button>
         </div>
     </div>
 
     <!-- ════ FOOTER FRAGMENT ════ -->
     <footer th:fragment="footer" class="app-footer">
         <div class="footer-inner">
-            <div class="footer-brand">
-                <div class="footer-brand-icon">🎓</div>
-                <div class="footer-brand-name">Smart University MMS</div>
+            <div class="footer-brand-side">
+                <div class="footer-brand">
+                    <div class="footer-brand-icon">🎓</div>
+                    <div class="footer-brand-name">Smart University MMS</div>
+                </div>
+                <div class="footer-meta mt-2">
+                    © 2025 <strong>Rwanda Education Board</strong> · National Maintenance Platform
+                </div>
             </div>
-            <div class="footer-meta">
-                © 2025 <strong>Rwanda Education Board</strong> · National Maintenance Platform
+
+            <div class="footer-links-side text-center text-md-end">
+                <div class="footer-contact-links d-flex gap-3 justify-content-center justify-content-md-end mb-2">
+                    <a href="https://wa.me/250793719113" target="_blank" class="text-emerald text-decoration-none">
+                        <i class="bi bi-whatsapp me-1"></i> +250 793 719 113
+                    </a>
+                    <a href="mailto:harindintwarietiennee@gmail.com" class="text-cyan text-decoration-none">
+                        <i class="bi bi-envelope-at me-1"></i> Support Email
+                    </a>
+                </div>
+                <div class="footer-legal-links d-flex gap-3 justify-content-center justify-content-md-end"
+                    style="font-size: 11px; opacity: 0.6;">
+                    <a th:href="@{/privacy-policy}" class="text-white text-decoration-none hover-opacity-1">Privacy
+                        Policy</a>
+                    <a th:href="@{/terms-of-service}" class="text-white text-decoration-none hover-opacity-1">Terms of
+                        Service</a>
+                    <a th:href="@{/help-desk}" class="text-white text-decoration-none hover-opacity-1">Help Desk</a>
+                </div>
             </div>
         </div>
     </footer>

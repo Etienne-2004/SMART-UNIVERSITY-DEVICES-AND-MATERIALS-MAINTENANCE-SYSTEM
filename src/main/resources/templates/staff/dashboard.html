@@ -16,7 +16,7 @@
         <main class="page-content">
             <div th:if="${success}" class="alert alert-success alert-dismissible fade show mb-4">
                 <i class="bi bi-check-circle-fill me-2"></i><span th:text="${success}"></span>
-                <button class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
 
             <!-- Welcome Banner -->
@@ -50,8 +50,8 @@
                         <div class="kpi-icon-wrap"><i class="bi bi-box-fill" style="color:#fbbf24"></i></div>
                     </div>
                     <div class="kpi-value count-up" th:text="${myMaterials.size()}">0</div>
-                    <div class="kpi-label">Material Reports</div>
-                    <div class="kpi-sublabel">Items I reported</div>
+                    <div class="kpi-label">Materials</div>
+                    <div class="kpi-sublabel">Learning resources</div>
                 </div>
                 <div class="kpi-card c-cyan">
                     <div class="kpi-header">
