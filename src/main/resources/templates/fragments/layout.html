@@ -112,24 +112,6 @@
                     </a>
                 </th:block>
 
-                <!-- Technician Nav -->
-                <th:block th:if="${currentRole == 'TECHNICIAN'}">
-                    <div class="nav-group-label">Technical Portal</div>
-                    <a th:href="@{/technician/dashboard}" class="nav-item" th:classappend="${activeItem == 'dashboard' ? 'active' : ''}">
-                        <span class="nav-icon"><i class="bi bi-grid-1x2-fill"></i></span>
-                        <span class="nav-label">Dashboard</span>
-                    </a>
-                    <a th:href="@{/technician/tasks}" class="nav-item" th:classappend="${activeItem == 'tasks' ? 'active' : ''}">
-                        <span class="nav-icon"><i class="bi bi-tools"></i></span>
-                        <span class="nav-label">My Tasks</span>
-                    </a>
-                    <div class="nav-group-label" style="margin-top:12px">Learning</div>
-                    <a th:href="@{/learning}" class="nav-item" th:classappend="${activeItem == 'learning' ? 'active' : ''}">
-                        <span class="nav-icon"><i class="bi bi-mortarboard-fill"></i></span>
-                        <span class="nav-label">Learning Centre</span>
-                    </a>
-                </th:block>
-
                 <!-- Cleaner Nav -->
                 <th:block th:if="${currentRole == 'CLEANER_STUDENT'}">
                     <div class="nav-group-label">Maintenance Portal</div>
