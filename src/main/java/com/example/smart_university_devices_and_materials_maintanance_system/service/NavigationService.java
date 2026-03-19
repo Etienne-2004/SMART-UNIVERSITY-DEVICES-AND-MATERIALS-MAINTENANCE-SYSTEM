@@ -154,36 +154,47 @@ public class NavigationService {
     }
 
     /**
-     * Technician-specific navigation with unique technician-focused items
+     * Technician-specific navigation with admin-style structure
      */
     private List<NavigationItem> getTechnicianNavigation(User technician, String currentPath) {
         List<NavigationItem> items = new ArrayList<>();
 
+        int pendingUsers = userService.getPendingApprovals().size();
         int pendingDevices = deviceService.getPendingApproval().size();
         int pendingMaterials = materialService.getPendingApproval().size();
         int unreadNotifications = notificationService.countUnread(technician.getId());
 
         // Dashboard - Always first with notification badge
         items.add(new NavigationItem(
-            "My Dashboard", 
+            "Dashboard", 
             "bi-speedometer2", 
             "/technician/dashboard", 
             unreadNotifications > 0 ? String.valueOf(unreadNotifications) : null,
             currentPath.contains("/technician/dashboard"),
-            "Technician overview & performance"
+            "Technician operations overview"
         ));
 
-        // Device Management - Shows pending device issues
+        // User Management - Shows pending user approvals
+        items.add(new NavigationItem(
+            "Users", 
+            "bi-people-fill", 
+            "/technician/users", 
+            pendingUsers > 0 ? String.valueOf(pendingUsers) : null,
+            currentPath.contains("/technician/users"),
+            "User management & requests"
+        ));
+
+        // Device Management - Shows pending device approvals
         items.add(new NavigationItem(
             "Devices", 
             "bi-laptop-fill", 
             "/technician/devices", 
             pendingDevices > 0 ? String.valueOf(pendingDevices) : null,
             currentPath.contains("/technician/devices"),
-            "Device maintenance & status"
+            "Device management & status"
         ));
 
-        // Material Management - Shows pending material issues
+        // Material Management - Shows pending material approvals
         items.add(new NavigationItem(
             "Materials", 
             "bi-box-fill", 
@@ -203,14 +214,14 @@ public class NavigationService {
             "Maintenance operations"
         ));
 
-        // Report Issue - Technician can report issues
+        // Analytics - Technical insights and reporting
         items.add(new NavigationItem(
-            "Report Issue", 
-            "bi-exclamation-triangle", 
-            "/technician/report", 
+            "Analytics", 
+            "bi-bar-chart-fill", 
+            "/technician/analytics", 
             null,
-            currentPath.contains("/technician/report"),
-            "Report new maintenance issues"
+            currentPath.contains("/technician/analytics"),
+            "Technical analytics & reports"
         ));
 
         // Learning Centre - Training resources

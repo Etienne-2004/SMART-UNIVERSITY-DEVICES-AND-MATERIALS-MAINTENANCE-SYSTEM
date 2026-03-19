@@ -82,11 +82,12 @@ Learning → /learning
 
 #### 🔧 **Technician Navigation**
 ```
-My Dashboard → /technician/dashboard
+Dashboard → /technician/dashboard
+Users → /technician/users
 Devices → /technician/devices
 Materials → /technician/materials
 Maintenance → /technician/maintenance
-Report Issue → /technician/report
+Analytics → /technician/analytics
 Learning → /learning
 ```
 
