@@ -159,13 +159,30 @@
     <nav th:fragment="navbar(pageTitle)" class="top-navbar">
         <button class="navbar-hamburger" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
         <div class="navbar-breadcrumb">
-            <div class="navbar-page-title" th:text="${pageTitle}">Admin Dashboard</div>
-            <div class="navbar-page-sub text-muted" style="font-size:11px">National University Maintenance System ·
-                Rwanda</div>
+            <div class="navbar-page-title" th:text="${pageTitle != null ? pageTitle : 'Dashboard'}">Admin Dashboard</div>
+            <div class="navbar-page-sub text-muted" style="font-size:11px" th:text="${pageSubtitle != null ? pageSubtitle : 'National University Maintenance System · Rwanda'}">
+                National University Maintenance System · Rwanda
+            </div>
         </div>
         <div class="navbar-right">
-            <!-- Main Navigation Links -->
-            <div class="navbar-nav-links">
+            <!-- Smart Navigation Links - Contextual based on user role -->
+            <div class="navbar-nav-links" th:if="${navigationItems != null}">
+                <th:block th:each="navItem : ${navigationItems}">
+                    <a th:href="${navItem.url}" 
+                       class="navbar-link" 
+                       th:classappend="${navItem.active ? 'active' : ''}"
+                       th:title="${navItem.description}">
+                        <i th:class="'bi ' + ${navItem.icon}"></i> 
+                        <span th:text="${navItem.name}">Link</span>
+                        <span class="nav-badge-indicator" 
+                              th:if="${navItem.badge != null}" 
+                              th:text="${navItem.badge}">0</span>
+                    </a>
+                </th:block>
+            </div>
+            
+            <!-- Fallback for pages without smart navigation -->
+            <div class="navbar-nav-links" th:unless="${navigationItems != null}">
                 <a th:href="@{/admin/dashboard}" class="navbar-link" th:classappend="${pageTitle == 'Admin Dashboard' ? 'active' : ''}">
                     <i class="bi bi-speedometer2"></i> Dashboard
                 </a>
@@ -182,6 +199,7 @@
                     <i class="bi bi-tools"></i> Maintenance
                 </a>
             </div>
+            
             <!-- Profile -->
             <div class="dropdown">
                 <button class="user-profile-drop" data-bs-toggle="dropdown">

@@ -11,6 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Controller
 @RequestMapping("/technician")
 @RequiredArgsConstructor
@@ -20,14 +22,25 @@ public class TechnicianController {
     private final MaintenanceService maintenanceService;
     private final NotificationService notificationService;
     private final MaintenanceRequestRepository maintenanceRequestRepository;
+    private final NavigationService navigationService;
 
     private User getCurrentUser(UserDetails userDetails) {
         return userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
     }
 
+    private void addSmartNavigation(Model model, User currentUser, HttpServletRequest request) {
+        String currentPath = request.getRequestURI();
+        model.addAttribute("navigationItems", navigationService.getSmartNavigationItems(currentUser, currentPath));
+        model.addAttribute("pageTitle", navigationService.getPageTitle(currentPath, currentUser));
+        model.addAttribute("pageSubtitle", navigationService.getPageSubtitle(currentPath, currentUser));
+    }
+
     @GetMapping("/dashboard")
-    public String dashboard(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+    public String dashboard(@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request, Model model) {
         User technician = getCurrentUser(userDetails);
+
+        // Add smart navigation
+        addSmartNavigation(model, technician, request);
 
         model.addAttribute("technician", technician);
         model.addAttribute("assignedTasks", maintenanceService.getByTechnician(technician.getId()));
@@ -46,8 +59,11 @@ public class TechnicianController {
     }
 
     @GetMapping("/tasks")
-    public String tasks(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+    public String tasks(@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request, Model model) {
         User technician = getCurrentUser(userDetails);
+        
+        // Add smart navigation
+        addSmartNavigation(model, technician, request);
         model.addAttribute("technician", technician);
         model.addAttribute("tasks", maintenanceService.getByTechnician(technician.getId()));
         return "technician/tasks";
