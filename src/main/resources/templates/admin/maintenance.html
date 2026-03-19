@@ -42,35 +42,53 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="r: ${requests}">
-                                <td th:text="'#' + ${r.id}" class="fw-700"></td>
-                                <td
-                                    th:text="${r.requestType + ': ' + (r.device?.name ?: r.material?.name ?: 'Common')}">
-                                    Item</td>
-                                <td th:text="${#strings.abbreviate(r.issueDescription, 30)}">Issue</td>
+                            <tr th:each="req : ${requests}">
+                                <td th:text="${req.id}">1</td>
                                 <td>
-                                    <span class="badge"
-                                        th:classappend="${r.priority.name() == 'HIGH' ? 'bg-danger' : (r.priority.name() == 'MEDIUM' ? 'bg-warning' : 'bg-info')}"
-                                        th:text="${r.priority}">PRIO</span>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm bg-primary text-white rounded-circle me-2 d-flex align-items-center justify-content-center" 
+                                             style="width: 28px; height: 28px; font-size: 10px;">
+                                            <span th:text="${req.reportedBy?.fullName != null ? #strings.substring(req.reportedBy.fullName, 0, 1).toUpperCase() : 'U'}">U</span>
+                                        </div>
+                                        <div>
+                                            <div class="fw-600" th:text="${req.reportedBy?.fullName ?: 'Unknown'}">John Doe</div>
+                                            <small class="text-muted" th:text="${req.reportedBy?.email ?: 'unknown@example.com'}">john@example.com</small>
+                                        </div>
+                                    </div>
                                 </td>
+                                <td th:text="${req.device?.deviceName ?: 'N/A'}">Laptop</td>
+                                <td th:text="${req.material?.materialName ?: 'N/A'}">Projector</td>
+                                <td th:text="${req.issueType}">Hardware Issue</td>
+                                <td th:text="${req.priority}">High</td>
                                 <td>
-                                    <span class="badge"
-                                        th:classappend="${r.status.name() == 'COMPLETED' ? 'bg-success' : 'bg-secondary'}"
-                                        th:text="${r.status}">STATUS</span>
+                                    <span class="badge" 
+                                          th:classappend="${req.status.name() == 'PENDING' ? 'bg-warning' : 
+                                                     req.status.name() == 'IN_PROGRESS' ? 'bg-info' : 
+                                                     req.status.name() == 'COMPLETED' ? 'bg-success' : 'bg-secondary'}"
+                                          th:text="${#strings.replace(req.status.name(), '_', ' ')}">PENDING</span>
                                 </td>
-                                <td th:text="${r.technician?.fullName ?: 'Unassigned'}" class="text-indigo"></td>
-                                <td th:text="${#temporals.format(r.reportedAt,'dd MMM HH:mm')}">Date</td>
+                                <td th:text="${#temporals.format(req.reportedAt,'dd MMM yyyy HH:mm')}">15 Mar 2026 14:30</td>
                                 <td>
-                                    <!-- Assign Button triggers modal -->
-                                    <button th:if="${r.status.name() == 'PENDING'}" class="btn btn-sm btn-primary"
-                                        data-bs-toggle="modal" th:data-bs-target="'#assignModal' + ${r.id}">
-                                        <i class="bi bi-person-plus"></i> Assign
-                                    </button>
-                                    <form th:if="${r.status.name() == 'COMPLETED'}"
-                                        th:action="@{'/admin/maintenance/' + ${r.id} + '/verify'}" method="post">
-                                        <button class="btn btn-sm btn-success"><i class="bi bi-check-all"></i>
-                                            Verify</button>
-                                    </form>
+                                    <div class="d-flex gap-1">
+                                        <button class="btn btn-sm btn-outline-primary" 
+                                                th:onclick="'viewDetails(' + ${req.id} + ')'"
+                                                data-bs-toggle="modal" data-bs-target="#taskModal">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                        <th:block th:if="${req.status.name() == 'PENDING'}">
+                                            <button class="btn btn-sm btn-outline-success" 
+                                                    th:onclick="'assignTask(' + ${req.id} + ')'"
+                                                    data-bs-toggle="modal" data-bs-target="#assignModal">
+                                                <i class="bi bi-person-plus"></i>
+                                            </button>
+                                        </th:block>
+                                        <th:block th:if="${req.status.name() == 'COMPLETED'}">
+                                            <button class="btn btn-sm btn-outline-warning" 
+                                                    th:onclick="'verifyTask(' + ${req.id} + ')'">
+                                                <i class="bi bi-check-circle"></i>
+                                            </button>
+                                        </th:block>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
