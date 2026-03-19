@@ -30,111 +30,123 @@
         </div>
 
         <nav class="sidebar-nav">
-            <!-- Admin Nav -->
-            <th:block th:if="${currentRole == 'ADMIN'}">
-                <div class="nav-group-label">Administration</div>
-                <a th:href="@{/admin/dashboard}" class="nav-item"
-                    th:classappend="${activeItem == 'dashboard' ? 'active' : ''}">
-                    <span class="nav-icon"><i class="bi bi-grid-1x2-fill"></i></span>
-                    <span class="nav-label">Dashboard</span>
-                </a>
-                <a th:href="@{/admin/users}" class="nav-item" th:classappend="${activeItem == 'users' ? 'active' : ''}">
-                    <span class="nav-icon"><i class="bi bi-people-fill"></i></span>
-                    <span class="nav-label">Users</span>
-                    <span class="nav-badge" th:if="${pendingUsersCount > 0}" th:text="${pendingUsersCount}">0</span>
-                </a>
-                <a th:href="@{/admin/devices}" class="nav-item"
-                    th:classappend="${activeItem == 'devices' ? 'active' : ''}">
-                    <span class="nav-icon"><i class="bi bi-laptop-fill"></i></span>
-                    <span class="nav-label">Devices</span>
-                    <span class="nav-badge" th:if="${pendingDevicesCount > 0}" th:text="${pendingDevicesCount}">0</span>
-                </a>
-                <a th:href="@{/admin/materials}" class="nav-item"
-                    th:classappend="${activeItem == 'materials' ? 'active' : ''}">
-                    <span class="nav-icon"><i class="bi bi-box-fill"></i></span>
-                    <span class="nav-label">Materials</span>
-                </a>
-                <div class="nav-group-label" style="margin-top:12px">Operations</div>
-                <a th:href="@{/admin/maintenance}" class="nav-item"
-                    th:classappend="${activeItem == 'maintenance' ? 'active' : ''}">
-                    <span class="nav-icon"><i class="bi bi-tools"></i></span>
-                    <span class="nav-label">Maintenance</span>
-                </a>
-                <a th:href="@{/admin/analytics}" class="nav-item"
-                    th:classappend="${activeItem == 'analytics' ? 'active' : ''}">
-                    <span class="nav-icon"><i class="bi bi-bar-chart-line-fill"></i></span>
-                    <span class="nav-label">Analytics</span>
-                </a>
-                <div class="nav-group-label" style="margin-top:12px">Learning</div>
-                <a th:href="@{/learning}" class="nav-item" th:classappend="${activeItem == 'learning' ? 'active' : ''}">
-                    <span class="nav-icon"><i class="bi bi-mortarboard-fill"></i></span>
-                    <span class="nav-label">Learning Centre</span>
-                </a>
+            <!-- Dynamic Navigation Items - Contextual based on user role -->
+            <th:block th:if="${navigationItems != null}">
+                <div class="nav-group-label" th:text="${currentRole == 'ADMIN' ? 'Administration' : (currentRole == 'TECHNICIAN' ? 'Technical Portal' : (currentRole == 'CLEANER_STUDENT' ? 'Maintenance Portal' : 'Staff Portal')}">
+                    Portal
+                </div>
+                <th:block th:each="navItem : ${navigationItems}">
+                    <a th:href="${navItem.url}" 
+                       class="nav-item" 
+                       th:classappend="${navItem.active ? 'active' : ''}"
+                       th:title="${navItem.description}">
+                        <span class="nav-icon">
+                            <i th:class="'bi ' + ${navItem.icon}"></i>
+                            <span class="nav-badge" 
+                                  th:if="${navItem.badge != null}" 
+                                  th:text="${navItem.badge}">0</span>
+                        </span>
+                        <span class="nav-label" th:text="${navItem.name}">Link</span>
+                    </a>
+                </th:block>
             </th:block>
+            
+            <!-- Fallback for pages without smart navigation -->
+            <th:block th:unless="${navigationItems != null}">
+                <!-- Admin Nav -->
+                <th:block th:if="${currentRole == 'ADMIN'}">
+                    <div class="nav-group-label">Administration</div>
+                    <a th:href="@{/admin/dashboard}" class="nav-item" th:classappend="${activeItem == 'dashboard' ? 'active' : ''}">
+                        <span class="nav-icon"><i class="bi bi-grid-1x2-fill"></i></span>
+                        <span class="nav-label">Dashboard</span>
+                    </a>
+                    <a th:href="@{/admin/users}" class="nav-item" th:classappend="${activeItem == 'users' ? 'active' : ''}">
+                        <span class="nav-icon"><i class="bi bi-people-fill"></i></span>
+                        <span class="nav-label">Users</span>
+                        <span class="nav-badge" th:if="${pendingUsersCount > 0}" th:text="${pendingUsersCount}">0</span>
+                    </a>
+                    <a th:href="@{/admin/devices}" class="nav-item" th:classappend="${activeItem == 'devices' ? 'active' : ''}">
+                        <span class="nav-icon"><i class="bi bi-laptop-fill"></i></span>
+                        <span class="nav-label">Devices</span>
+                        <span class="nav-badge" th:if="${pendingDevicesCount > 0}" th:text="${pendingDevicesCount}">0</span>
+                    </a>
+                    <a th:href="@{/admin/materials}" class="nav-item" th:classappend="${activeItem == 'materials' ? 'active' : ''}">
+                        <span class="nav-icon"><i class="bi bi-box-fill"></i></span>
+                        <span class="nav-label">Materials</span>
+                    </a>
+                    <div class="nav-group-label" style="margin-top:12px">Operations</div>
+                    <a th:href="@{/admin/maintenance}" class="nav-item" th:classappend="${activeItem == 'maintenance' ? 'active' : ''}">
+                        <span class="nav-icon"><i class="bi bi-tools"></i></span>
+                        <span class="nav-label">Maintenance</span>
+                    </a>
+                    <a th:href="@{/admin/analytics}" class="nav-item" th:classappend="${activeItem == 'analytics' ? 'active' : ''}">
+                        <span class="nav-icon"><i class="bi bi-bar-chart-line-fill"></i></span>
+                        <span class="nav-label">Analytics</span>
+                    </a>
+                    <div class="nav-group-label" style="margin-top:12px">Learning</div>
+                    <a th:href="@{/learning}" class="nav-item" th:classappend="${activeItem == 'learning' ? 'active' : ''}">
+                        <span class="nav-icon"><i class="bi bi-mortarboard-fill"></i></span>
+                        <span class="nav-label">Learning Centre</span>
+                    </a>
+                </th:block>
 
-            <!-- Staff Nav -->
-            <th:block th:if="${currentRole == 'STAFF'}">
-                <div class="nav-group-label">Staff Portal</div>
-                <a th:href="@{/staff/dashboard}" class="nav-item"
-                    th:classappend="${activeItem == 'dashboard' ? 'active' : ''}">
-                    <span class="nav-icon"><i class="bi bi-grid-1x2-fill"></i></span>
-                    <span class="nav-label">Dashboard</span>
-                </a>
-                <a th:href="@{/staff/devices/add}" class="nav-item"
-                    th:classappend="${activeItem == 'devices' ? 'active' : ''}">
-                    <span class="nav-icon"><i class="bi bi-laptop-fill"></i></span>
-                    <span class="nav-label">Register Device</span>
-                </a>
-                <a th:href="@{/staff/materials/add}" class="nav-item"
-                    th:classappend="${activeItem == 'materials' ? 'active' : ''}">
-                    <span class="nav-icon"><i class="bi bi-box-fill"></i></span>
-                    <span class="nav-label">Report Material</span>
-                </a>
-                <div class="nav-group-label" style="margin-top:12px">Learning</div>
-                <a th:href="@{/learning}" class="nav-item" th:classappend="${activeItem == 'learning' ? 'active' : ''}">
-                    <span class="nav-icon"><i class="bi bi-mortarboard-fill"></i></span>
-                    <span class="nav-label">Learning Centre</span>
-                </a>
-            </th:block>
+                <!-- Staff Nav -->
+                <th:block th:if="${currentRole == 'STAFF'}">
+                    <div class="nav-group-label">Staff Portal</div>
+                    <a th:href="@{/staff/dashboard}" class="nav-item" th:classappend="${activeItem == 'dashboard' ? 'active' : ''}">
+                        <span class="nav-icon"><i class="bi bi-grid-1x2-fill"></i></span>
+                        <span class="nav-label">Dashboard</span>
+                    </a>
+                    <a th:href="@{/staff/devices/add}" class="nav-item" th:classappend="${activeItem == 'devices' ? 'active' : ''}">
+                        <span class="nav-icon"><i class="bi bi-laptop-fill"></i></span>
+                        <span class="nav-label">Register Device</span>
+                    </a>
+                    <a th:href="@{/staff/materials/add}" class="nav-item" th:classappend="${activeItem == 'materials' ? 'active' : ''}">
+                        <span class="nav-icon"><i class="bi bi-box-fill"></i></span>
+                        <span class="nav-label">Report Material</span>
+                    </a>
+                    <div class="nav-group-label" style="margin-top:12px">Learning</div>
+                    <a th:href="@{/learning}" class="nav-item" th:classappend="${activeItem == 'learning' ? 'active' : ''}">
+                        <span class="nav-icon"><i class="bi bi-mortarboard-fill"></i></span>
+                        <span class="nav-label">Learning Centre</span>
+                    </a>
+                </th:block>
 
-            <!-- Technician Nav -->
-            <th:block th:if="${currentRole == 'TECHNICIAN'}">
-                <div class="nav-group-label">Technical Portal</div>
-                <a th:href="@{/technician/dashboard}" class="nav-item"
-                    th:classappend="${activeItem == 'dashboard' ? 'active' : ''}">
-                    <span class="nav-icon"><i class="bi bi-grid-1x2-fill"></i></span>
-                    <span class="nav-label">Dashboard</span>
-                </a>
-                <a th:href="@{/technician/tasks}" class="nav-item"
-                    th:classappend="${activeItem == 'tasks' ? 'active' : ''}">
-                    <span class="nav-icon"><i class="bi bi-tools"></i></span>
-                    <span class="nav-label">My Tasks</span>
-                </a>
-                <div class="nav-group-label" style="margin-top:12px">Learning</div>
-                <a th:href="@{/learning}" class="nav-item" th:classappend="${activeItem == 'learning' ? 'active' : ''}">
-                    <span class="nav-icon"><i class="bi bi-mortarboard-fill"></i></span>
-                    <span class="nav-label">Learning Centre</span>
-                </a>
-            </th:block>
+                <!-- Technician Nav -->
+                <th:block th:if="${currentRole == 'TECHNICIAN'}">
+                    <div class="nav-group-label">Technical Portal</div>
+                    <a th:href="@{/technician/dashboard}" class="nav-item" th:classappend="${activeItem == 'dashboard' ? 'active' : ''}">
+                        <span class="nav-icon"><i class="bi bi-grid-1x2-fill"></i></span>
+                        <span class="nav-label">Dashboard</span>
+                    </a>
+                    <a th:href="@{/technician/tasks}" class="nav-item" th:classappend="${activeItem == 'tasks' ? 'active' : ''}">
+                        <span class="nav-icon"><i class="bi bi-tools"></i></span>
+                        <span class="nav-label">My Tasks</span>
+                    </a>
+                    <div class="nav-group-label" style="margin-top:12px">Learning</div>
+                    <a th:href="@{/learning}" class="nav-item" th:classappend="${activeItem == 'learning' ? 'active' : ''}">
+                        <span class="nav-icon"><i class="bi bi-mortarboard-fill"></i></span>
+                        <span class="nav-label">Learning Centre</span>
+                    </a>
+                </th:block>
 
-            <!-- Cleaner Nav -->
-            <th:block th:if="${currentRole == 'CLEANER_STUDENT'}">
-                <div class="nav-group-label">Maintenance Portal</div>
-                <a th:href="@{/cleaner/dashboard}" class="nav-item"
-                    th:classappend="${activeItem == 'dashboard' ? 'active' : ''}">
-                    <span class="nav-icon"><i class="bi bi-grid-1x2-fill"></i></span>
-                    <span class="nav-label">Dashboard</span>
-                </a>
-                <a th:href="@{/cleaner/report}" class="nav-item"
-                    th:classappend="${activeItem == 'report' ? 'active' : ''}">
-                    <span class="nav-icon"><i class="bi bi-plus-circle-fill"></i></span>
-                    <span class="nav-label">New Report</span>
-                </a>
-                <div class="nav-group-label" style="margin-top:12px">Learning</div>
-                <a th:href="@{/learning}" class="nav-item" th:classappend="${activeItem == 'learning' ? 'active' : ''}">
-                    <span class="nav-icon"><i class="bi bi-mortarboard-fill"></i></span>
-                    <span class="nav-label">Learning Centre</span>
-                </a>
+                <!-- Cleaner Nav -->
+                <th:block th:if="${currentRole == 'CLEANER_STUDENT'}">
+                    <div class="nav-group-label">Maintenance Portal</div>
+                    <a th:href="@{/cleaner/dashboard}" class="nav-item" th:classappend="${activeItem == 'dashboard' ? 'active' : ''}">
+                        <span class="nav-icon"><i class="bi bi-grid-1x2-fill"></i></span>
+                        <span class="nav-label">Dashboard</span>
+                    </a>
+                    <a th:href="@{/cleaner/report}" class="nav-item" th:classappend="${activeItem == 'report' ? 'active' : ''}">
+                        <span class="nav-icon"><i class="bi bi-plus-circle-fill"></i></span>
+                        <span class="nav-label">New Report</span>
+                    </a>
+                    <div class="nav-group-label" style="margin-top:12px">Learning</div>
+                    <a th:href="@{/learning}" class="nav-item" th:classappend="${activeItem == 'learning' ? 'active' : ''}">
+                        <span class="nav-icon"><i class="bi bi-mortarboard-fill"></i></span>
+                        <span class="nav-label">Learning Centre</span>
+                    </a>
+                </th:block>
             </th:block>
 
             <div class="nav-divider"></div>
