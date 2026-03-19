@@ -438,9 +438,9 @@ body {
   position: relative;
   z-index: 1;
   padding-top: var(--navbar-h);
-  padding-bottom: 80px;
-  justify-content: center;
-  align-items: center;
+  padding-bottom: 60px;
+  height: calc(100vh - var(--navbar-h) - 60px);
+  overflow: hidden;
 }
 
 .main-content.expanded {
@@ -540,23 +540,40 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 20px;
+  padding: 14px 24px;
   border-radius: var(--r-sm);
   color: var(--text-primary);
   text-decoration: none;
-  font-size: 16px;
-  bottom: 0;
-  left: 50%;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--indigo), var(--cyan));
-  transform: translateX(-50%);
-  transition: width var(--t-base);
+  font-size: 18px;
+  font-weight: 800;
+  transition: all var(--t-base);
+  background: transparent;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  position: relative;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.navbar-link:hover::before,
-.navbar-link.active::before {
-  width: 80%;
+.navbar-link:hover {
+  background: var(--indigo-dim);
+  color: var(--indigo-bright);
+  border-color: rgba(99, 102, 241, 0.4);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.35);
+}
+
+.navbar-link.active {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.4), rgba(124, 58, 237, 0.3));
+  color: var(--text-white);
+  border-color: rgba(99, 102, 241, 0.6);
+  box-shadow: 0 8px 30px rgba(99, 102, 241, 0.45);
+  transform: translateY(-1px) scale(1.02);
+}
+
+.navbar-link i {
+  font-size: 20px;
 }
 
 /* Notification Bell */
@@ -1776,10 +1793,11 @@ body {
   bottom: 0;
   left: var(--sidebar-w);
   right: 0;
-  z-index: 100;
+  z-index: 1000;
   backdrop-filter: blur(16px);
-  background: rgba(6, 12, 24, 0.95);
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+  background: rgba(6, 12, 24, 0.98);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+  height: 60px;
 }
 
 .app-footer::before {
