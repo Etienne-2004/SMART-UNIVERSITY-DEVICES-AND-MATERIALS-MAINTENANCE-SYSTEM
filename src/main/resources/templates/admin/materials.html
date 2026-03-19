@@ -38,11 +38,11 @@
                             <tr>
                                 <th>#</th>
                                 <th>Name</th>
-                                <th>Quantity</th>
-                                <th>Unit</th>
+                                <th>Location</th>
+                                <th>Description</th>
                                 <th>Status</th>
-                                <th>Category</th>
                                 <th>Reported By</th>
+                                <th>University</th>
                                 <th>Created</th>
                                 <th>Actions</th>
                             </tr>
@@ -50,16 +50,16 @@
                         <tbody>
                             <tr th:each="m: ${materials}">
                                 <td th:text="${m.id}" class="text-muted small"></td>
-                                <td th:text="${m.name}">Material Name</td>
-                                <td th:text="${m.quantity}">0</td>
-                                <td th:text="${m.unit ?: 'PCS'}">UNIT</td>
+                                <td th:text="${m.materialName}">Material Name</td>
+                                <td th:text="${m.roomLocation}">Room</td>
+                                <td th:text="${m.description != null and m.description.length() > 25 ? m.description.substring(0,25) + '...' : m.description ?: '—'}">Description</td>
                                 <td>
                                     <span class="badge"
-                                        th:classappend="${m.status.name() == 'OPERATIONAL' ? 'bg-success' : 'bg-warning'}"
+                                        th:classappend="${m.status.name() == 'VERIFIED' ? 'bg-success' : 'bg-warning'}"
                                         th:text="${m.status}">STATUS</span>
                                 </td>
-                                <td th:text="${m.category}">CATEGORY</td>
-                                <td th:text="${m.owner?.fullName ?: '—'}">Owner</td>
+                                <td th:text="${m.reportedBy?.fullName ?: '—'}">Reported By</td>
+                                <td th:text="${m.university?.abbreviation ?: '—'}">Uni</td>
                                 <td th:text="${#temporals.format(m.createdAt,'dd MMM yyyy')}">Date</td>
                                 <td>
                                     <a href="#" class="btn btn-sm btn-outline-primary"><i

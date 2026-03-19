@@ -49,8 +49,8 @@ public class AuthService {
                 .college(college)
                 .mfaEnabled(true)
                 .accountStatus(role == User.Role.ADMIN
-                        ? User.AccountStatus.ACTIVE
-                        : User.AccountStatus.PENDING)
+                        ? User.AccountStatus.PENDING_EMAIL
+                        : User.AccountStatus.PENDING_EMAIL)
                 .build();
 
         User saved = userRepository.save(user);
@@ -79,6 +79,29 @@ public class AuthService {
         return generateToken(user);
     }
 
+    public String verifyOtpAndActivateAccount(String email, String otpCode) {
+        if (!otpService.validateOtp(email, otpCode)) {
+            throw new IllegalArgumentException("Invalid or expired OTP");
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        if (user.getAccountStatus() == User.AccountStatus.PENDING_EMAIL) {
+            // First time activation - after OTP, if not admin, wait for approval
+            if (user.getRole() == User.Role.ADMIN) {
+                user.setAccountStatus(User.AccountStatus.ACTIVE);
+            } else {
+                user.setAccountStatus(User.AccountStatus.PENDING_APPROVAL);
+            }
+            userRepository.save(user);
+        } else if (user.getAccountStatus() != User.AccountStatus.ACTIVE) {
+            throw new IllegalStateException("Account is not active. Current status: " + user.getAccountStatus());
+        }
+
+        return "Account activated successfully";
+    }
+
     public String verifyOtpAndLogin(String email, String otpCode) {
         if (!otpService.validateOtp(email, otpCode)) {
             throw new IllegalArgumentException("Invalid or expired OTP");
@@ -87,11 +110,16 @@ public class AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        if (user.getAccountStatus() == User.AccountStatus.PENDING) {
-            user.setAccountStatus(User.AccountStatus.ACTIVE);
+        if (user.getAccountStatus() == User.AccountStatus.PENDING_EMAIL) {
+            // First time activation - after OTP, if not admin, wait for approval
+            if (user.getRole() == User.Role.ADMIN) {
+                user.setAccountStatus(User.AccountStatus.ACTIVE);
+            } else {
+                user.setAccountStatus(User.AccountStatus.PENDING_APPROVAL);
+            }
             userRepository.save(user);
         } else if (user.getAccountStatus() != User.AccountStatus.ACTIVE) {
-            throw new IllegalStateException("Account is not active. Status: " + user.getAccountStatus());
+            throw new IllegalStateException("Account is not active. Current status: " + user.getAccountStatus());
         }
 
         return generateToken(user);

@@ -1,6 +1,7 @@
 package com.example.smart_university_devices_and_materials_maintanance_system.repositories;
 
 import com.example.smart_university_devices_and_materials_maintanance_system.entities.Material;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -9,6 +10,10 @@ import java.util.List;
 
 @Repository
 public interface MaterialRepository extends JpaRepository<Material, Long> {
+
+    @EntityGraph(attributePaths = {"university", "college", "assignedTechnician", "reportedBy"})
+    @org.springframework.lang.NonNull
+    List<Material> findAll();
 
     List<Material> findByUniversityId(Long universityId);
 

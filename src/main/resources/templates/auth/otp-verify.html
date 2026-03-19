@@ -20,7 +20,7 @@
                 <div class="otp-icon"><i class="bi bi-shield-lock-fill"></i></div>
             </div>
             <h2>OTP Verification</h2>
-            <p>Enter the 6-digit code sent to your email address</p>
+            <p>Enter the 6-digit code sent to <strong th:text="${email}">your email address</strong></p>
 
             <div th:if="${error}" class="alert alert-danger alert-sm" th:text="${error}"></div>
 

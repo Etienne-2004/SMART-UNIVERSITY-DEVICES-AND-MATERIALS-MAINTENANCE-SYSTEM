@@ -13,6 +13,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import jakarta.servlet.http.HttpSession;
+import java.util.Random;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.util.Base64;
+import javax.imageio.ImageIO;
 
 @Controller
 @RequiredArgsConstructor
@@ -24,13 +36,31 @@ public class AuthController {
     private final CollegeRepository collegeRepository;
     private final UserRepository userRepository;
 
+    @GetMapping("/privacy-policy")
+    public String privacyPolicy() {
+        return "privacy-policy";
+    }
+
+    @GetMapping("/terms-of-service")
+    public String termsOfService() {
+        return "terms-of-service";
+    }
+
+    @GetMapping("/help-desk")
+    public String helpDesk() {
+        return "help-desk";
+    }
+
     @GetMapping("/")
     public String home() {
         return "redirect:/login";
     }
 
     @GetMapping("/login")
-    public String loginPage(Model model) {
+    public String loginPage(Model model, HttpSession session) {
+        String captchaText = generateRandomCaptchaText(6);
+        session.setAttribute("captchaResult", captchaText);
+        model.addAttribute("captchaImage", generateCaptchaImage(captchaText));
         model.addAttribute("universities", universityRepository.findAll());
         return "auth/login";
     }
@@ -39,9 +69,24 @@ public class AuthController {
     public String processLogin(
             @RequestParam String email,
             @RequestParam String password,
+            @RequestParam(required = false) String captchaAnswer,
+            HttpSession session,
             HttpServletResponse response,
             RedirectAttributes redirectAttrs,
             Model model) {
+
+        String expectedCaptcha = (String) session.getAttribute("captchaResult");
+        if (expectedCaptcha != null && (captchaAnswer == null || !captchaAnswer.trim().equalsIgnoreCase(expectedCaptcha))) {
+            model.addAttribute("error", "High-Level Robot Verification Failed: Incorrect characters.");
+            
+            // Re-generate captcha for retry
+            String newCaptchaText = generateRandomCaptchaText(6);
+            session.setAttribute("captchaResult", newCaptchaText);
+            model.addAttribute("captchaImage", generateCaptchaImage(newCaptchaText));
+            
+            model.addAttribute("universities", universityRepository.findAll());
+            return "auth/login";
+        }
 
         try {
             String result = authService.initiateLogin(email, password);
@@ -58,6 +103,12 @@ public class AuthController {
 
         } catch (Exception e) {
             model.addAttribute("error", "Invalid credentials: " + e.getMessage());
+            
+            // Re-generate captcha
+            String newCaptchaText = generateRandomCaptchaText(6);
+            session.setAttribute("captchaResult", newCaptchaText);
+            model.addAttribute("captchaImage", generateCaptchaImage(newCaptchaText));
+            
             model.addAttribute("universities", universityRepository.findAll());
             return "auth/login";
         }
@@ -77,11 +128,12 @@ public class AuthController {
             Model model) {
 
         try {
-            String token = authService.verifyOtpAndLogin(email, otpCode);
-            setJwtCookie(response, token);
-
-            User user = userRepository.findByEmail(email).orElseThrow();
-            return "redirect:" + getDashboardPath(user.getRole());
+            String result = authService.verifyOtpAndActivateAccount(email, otpCode);
+            
+            // Show success message and redirect to login page
+            redirectAttrs.addFlashAttribute("success", 
+                "✅ Account activated successfully! You can now log in with your credentials.");
+            return "redirect:/login";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("email", email);
@@ -148,6 +200,7 @@ public class AuthController {
     private void setJwtCookie(HttpServletResponse response, String token) {
         Cookie cookie = new Cookie("JWT_TOKEN", token);
         cookie.setHttpOnly(true);
+        // cookie.setSecure(true); // Enable in production over HTTPS
         cookie.setPath("/");
         cookie.setMaxAge(86400); // 1 day
         response.addCookie(cookie);
@@ -160,5 +213,56 @@ public class AuthController {
             case STAFF -> "/staff/dashboard";
             case CLEANER_STUDENT -> "/cleaner/dashboard";
         };
+    }
+
+    private String generateRandomCaptchaText(int length) {
+        String chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#%&*+?";
+        StringBuilder sb = new StringBuilder();
+        Random rnd = new Random();
+        while (sb.length() < length) {
+            sb.append(chars.charAt(rnd.nextInt(chars.length())));
+        }
+        return sb.toString();
+    }
+
+    private String generateCaptchaImage(String captchaText) {
+        try {
+            int width = 160;
+            int height = 50;
+            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2d = image.createGraphics();
+
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            g2d.setColor(new Color(12, 17, 40));
+            g2d.fillRect(0, 0, width, height);
+
+            Random rand = new Random();
+            for (int i = 0; i < 7; i++) {
+                g2d.setColor(new Color(99 + rand.nextInt(100), 102 + rand.nextInt(100), 241));
+                g2d.drawLine(0, rand.nextInt(height), width, rand.nextInt(height));
+            }
+
+            g2d.setFont(new Font("Monospaced", Font.BOLD, 30));
+            for (int i = 0; i < captchaText.length(); i++) {
+                g2d.setColor(new Color(200 + rand.nextInt(55), 200 + rand.nextInt(55), 200 + rand.nextInt(55)));
+                g2d.drawString(String.valueOf(captchaText.charAt(i)), 15 + (i * 22), 35);
+            }
+
+            g2d.setTransform(new AffineTransform());
+            for (int i = 0; i < 60; i++) {
+                g2d.setColor(new Color(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255), 200));
+                g2d.drawOval(rand.nextInt(width), rand.nextInt(height), 1, 1);
+            }
+
+            g2d.dispose();
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(image, "png", baos);
+            byte[] imageBytes = baos.toByteArray();
+            return "data:image/png;base64," + Base64.getEncoder().encodeToString(imageBytes);
+        } catch (Exception e) {
+            return "";
+        }
     }
 }

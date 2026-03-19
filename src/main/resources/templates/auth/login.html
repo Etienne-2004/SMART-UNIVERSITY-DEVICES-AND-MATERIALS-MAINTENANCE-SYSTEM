@@ -22,16 +22,30 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: #06081a;
+            background: radial-gradient(circle at center, #1e1b4b 0%, #06081a 100%);
             color: #e2e8f0;
-            min-height: 100vh;
-            overflow-x: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 40px; /* Margins on all sides */
         }
 
-        /* ── Full-page layout ── */
+        /* ── Centered login container ── */
         .login-page {
+            width: 100%;
+            max-width: 1100px;
+            height: 100%;
+            max-height: 800px;
             display: flex;
-            min-height: 100vh;
+            background: rgba(16, 20, 36, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.7), 0 30px 60px -30px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255,255,255,0.05);
             position: relative;
         }
 
@@ -44,10 +58,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            background:
-                radial-gradient(ellipse 90% 80% at 20% 10%, rgba(80, 40, 160, 0.55) 0%, transparent 55%),
-                radial-gradient(ellipse 60% 50% at 80% 90%, rgba(6, 100, 180, 0.35) 0%, transparent 55%),
-                linear-gradient(160deg, #06051f 0%, #0a0829 40%, #070d25 100%);
+            background: url('/images/smart_university_background.png') center/cover no-repeat;
         }
 
         /* Top header bar inside hero (logo + RW badge) */
@@ -92,7 +103,10 @@
             }
         }
 
-        .logo-text-block {}
+        .logo-text-block {
+            display: flex;
+            flex-direction: column;
+        }
 
         .logo-title {
             font-family: 'Space Grotesk', sans-serif;
@@ -368,6 +382,14 @@
         }
 
         /* ── Main hero text block ── */
+        /* Animated Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #fff 0%, #818cf8 50%, #6366f1 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
         .hero-text {
             position: relative;
             z-index: 10;
@@ -375,24 +397,17 @@
             margin-top: auto;
         }
 
-        .hero-headline {
+        .hero-title {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 42px;
+            font-size: 52px;
             font-weight: 800;
-            line-height: 1.12;
-            margin-bottom: 16px;
-        }
-
-        .hero-headline .line1 {
-            display: block;
-            color: #fff;
-        }
-
-        .hero-headline .line2 {
-            display: block;
-            background: linear-gradient(135deg, #818cf8, #38bdf8, #a78bfa);
+            line-height: 1.1;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 50%, #818cf8 100%);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
         }
 
         .hero-desc {
@@ -423,9 +438,23 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 48px 32px;
-            background: #07091e;
+            padding: 32px;
+            background: rgba(8, 11, 28, 0.4);
             position: relative;
+            overflow: hidden !important;
+            z-index: 10;
+        }
+
+        /* Ambient glows behind the form */
+        .form-panel::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 60%; height: 60%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.07) 0%, transparent 70%);
+            filter: blur(40px); pointer-events: none;
+        }
+        .form-panel::after {
+            content: ''; position: absolute; bottom: 0; right: 0; width: 60%; height: 60%;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.05) 0%, transparent 70%);
+            filter: blur(40px); pointer-events: none;
         }
 
         /* Rwanda badge on form panel (top right) */
@@ -446,8 +475,118 @@
 
         .login-card {
             width: 100%;
-            max-width: 415px;
-            animation: cardIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 360px;
+            background: rgba(16, 20, 36, 0.7);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 10px 16px;
+            position: relative;
+            z-index: 20;
+            margin: auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-heading {
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .card-heading h2 {
+            font-size: 16px;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .card-heading p {
+            display: none;
+        }
+
+        .input-group {
+            margin-bottom: 4px;
+        }
+
+        .input-label {
+            display: none !important;
+        }
+
+        .input-field {
+            padding: 8px 12px 8px 36px;
+            font-size: 13px;
+            height: 40px;
+        }
+
+        .input-icon {
+            font-size: 14px;
+        }
+
+        .btn-submit {
+            margin: 6px 0 4px;
+            padding: 6px;
+            font-size: 13px;
+            height: 36px;
+        }
+
+        .form-divider {
+            display: none;
+        }
+
+        .demo-grid {
+            display: flex;
+            justify-content: space-around;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
+        .demo-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 60px; /* even narrower */
+        }
+
+        .demo-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .demo-card div:last-child {
+            display: block; /* Show the labels */
+        }
+
+        .dc-icon-wrapper {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(99,102,241,0.2);
+            font-size: 12px;
+        }
+
+        .dc-label {
+            font-size: 7px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.1px;
+            text-align: center;
+        }
+
+        .form-footer {
+            margin-top: 6px;
+            font-size: 10px;
+            text-align: center;
+        }
+
+        .rw-badge-form {
+            display: none !important;
         }
 
         @keyframes cardIn {
@@ -463,7 +602,7 @@
         }
 
         .card-heading {
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
 
         .card-heading h2 {
@@ -471,12 +610,13 @@
             font-size: 28px;
             font-weight: 800;
             color: #fff;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
 
         .card-heading p {
-            font-size: 13.5px;
-            color: #64748b;
+            font-size: 14px;
+            color: #94a3b8;
         }
 
         /* Alert */
@@ -511,23 +651,24 @@
 
         /* Inputs */
         .input-group {
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
         .input-label {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
-            color: #94a3b8;
-            margin-bottom: 7px;
+            color: #cbd5e1;
+            margin-bottom: 8px;
         }
 
         .input-label a {
             color: #818cf8;
-            font-size: 11px;
+            font-size: 12px;
             text-decoration: none;
+            transition: color 0.2s;
         }
 
         .input-label a:hover {
@@ -540,25 +681,26 @@
 
         .input-icon {
             position: absolute;
-            left: 14px;
+            left: 16px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 15px;
-            color: #475569;
+            font-size: 16px;
+            color: #64748b;
             transition: color 0.2s;
         }
 
         .input-field {
             width: 100%;
-            padding: 13px 14px 13px 42px;
-            background: rgba(12, 17, 40, 0.9);
-            border: 1px solid rgba(99, 102, 241, 0.2);
+            padding: 10px 14px 10px 40px;
+            background: rgba(8, 11, 28, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 12px;
-            color: #e2e8f0;
+            color: #f8fafc;
             font-size: 14px;
             font-family: 'Inter', sans-serif;
             outline: none;
-            transition: all 0.25s ease;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .input-field::placeholder {
@@ -566,9 +708,9 @@
         }
 
         .input-field:focus {
-            border-color: #6366f1;
-            background: rgba(12, 17, 40, 1);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.14), 0 0 18px rgba(99, 102, 241, 0.08);
+            border-color: #818cf8;
+            background: rgba(8, 11, 28, 0.9);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15), inset 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .input-wrap:focus-within .input-icon {
@@ -595,7 +737,7 @@
         /* Sign In button */
         .btn-submit {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             background: linear-gradient(135deg, #6366f1 0%, #7c3aed 50%, #6d28d9 100%);
             border: none;
             border-radius: 12px;
@@ -801,18 +943,29 @@
             <div class="orb orb-2"></div>
             <div class="orb orb-3"></div>
 
-            <!-- Top header bar -->
+            <!-- Top header bar (Elevated Design) -->
             <div class="hero-topbar">
-                <div class="hero-logo-row">
-                    <div class="logo-gem">🎓</div>
+                <div class="hero-logo-row" style="background: rgba(16, 20, 36, 0.6); padding: 8px 18px 8px 8px; border-radius: 99px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08);">
+                    <div class="logo-gem" style="width: 42px; height: 42px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); font-size: 20px;">🎓</div>
                     <div class="logo-text-block">
-                        <span class="logo-title">Smart University <span>MMS</span></span>
-                        <span class="logo-sub">National Maintenance System &nbsp;·&nbsp; Platform</span>
+                        <span class="logo-title" style="font-size: 16px;">Smart University <span>MMS</span></span>
+                        <span class="logo-sub" style="font-size: 9px; letter-spacing: 1.5px; color: #cbd5e1;">National Platform</span>
                     </div>
                 </div>
-                <div class="rw-badge">
-                    <span class="rw-abbr">RW</span>
-                    Rwanda National Platform &nbsp;🇷🇼
+                
+                <!-- Premium Rwanda Flag Badge -->
+                <div class="rw-badge" style="background: rgba(16, 20, 36, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 99px; padding: 10px 20px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 12px; transition: transform 0.3s ease;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 66" width="28" height="19" style="border-radius: 3px; box-shadow: 0 2px 8px rgba(0,0,0,0.4);">
+                        <rect width="100" height="33" fill="#00A1DE"/>
+                        <rect y="33" width="100" height="16.5" fill="#FAD201"/>
+                        <rect y="49.5" width="100" height="16.5" fill="#20603D"/>
+                        <!-- Sun graphic for Rwanda Flag -->
+                        <path d="M 80 4 L 81 12 L 89 12 L 83 17 L 85 25 L 80 20 L 75 25 L 77 17 L 71 12 L 79 12 Z" fill="#FAD201" transform="scale(0.8) translate(20, 2)"/>
+                    </svg>
+                    <div style="display: flex; flex-direction: column;">
+                        <span style="font-size: 9px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; line-height: 1;">Republic Of</span>
+                        <span style="font-weight: 800; color: #ffffff; letter-spacing: 0.5px; font-size: 14px; line-height: 1.2;">Rwanda</span>
+                    </div>
                 </div>
             </div>
 
@@ -829,198 +982,165 @@
             <div class="hex-node hn3"></div>
             <div class="hex-node hn4"></div>
 
-            <!-- Illustrated scene (SVG characters) -->
-            <div class="scene-wrapper">
+            <!-- Background Scene illustrations dynamically rendered in external image now -->
 
-                <!-- Person at desk (left) -->
-                <svg class="hero-person p-desk" width="230" height="260" viewBox="0 0 230 260" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <!-- Desk -->
-                    <rect x="10" y="185" width="215" height="8" rx="4" fill="#1e2a5a" />
-                    <rect x="20" y="193" width="8" height="60" rx="4" fill="#1a2347" />
-                    <rect x="197" y="193" width="8" height="60" rx="4" fill="#1a2347" />
-                    <!-- Monitor stand -->
-                    <rect x="92" y="165" width="10" height="22" rx="3" fill="#2d3a70" />
-                    <rect x="75" y="183" width="44" height="6" rx="3" fill="#2d3a70" />
-                    <!-- Monitor body -->
-                    <rect x="40" y="110" width="114" height="58" rx="8" fill="#111827" />
-                    <rect x="43" y="113" width="108" height="52" rx="6" fill="#0d1b3d" />
-                    <!-- Screen content lines -->
-                    <rect x="52" y="122" width="60" height="4" rx="2" fill="#6366f1" opacity="0.8" />
-                    <rect x="52" y="130" width="40" height="3" rx="2" fill="#06b6d4" opacity="0.6" />
-                    <rect x="52" y="138" width="70" height="3" rx="2" fill="#818cf8" opacity="0.5" />
-                    <rect x="52" y="146" width="50" height="3" rx="2" fill="#34d399" opacity="0.5" />
-                    <!-- Bar chart on screen -->
-                    <rect x="120" y="145" width="8" height="18" rx="2" fill="#6366f1" opacity="0.85" />
-                    <rect x="131" y="138" width="8" height="25" rx="2" fill="#06b6d4" opacity="0.85" />
-                    <rect x="142" y="130" width="8" height="33" rx="2" fill="#a78bfa" opacity="0.85" />
-                    <!-- Keyboard -->
-                    <rect x="60" y="188" width="90" height="12" rx="4" fill="#1e2a5a" />
-                    <rect x="65" y="190" width="80" height="8" rx="2" fill="#0f1735" />
-                    <!-- Chair -->
-                    <rect x="86" y="220" width="62" height="30" rx="6" fill="#1a2050" />
-                    <rect x="95" y="250" width="10" height="20" rx="3" fill="#1a2050" />
-                    <rect x="125" y="250" width="10" height="20" rx="3" fill="#1a2050" />
-                    <!-- Person body -->
-                    <ellipse cx="115" cy="90" rx="20" ry="22" fill="#e2b96f" />
-                    <!-- Headphones -->
-                    <path d="M95 88 Q95 68 115 68 Q135 68 135 88" stroke="#1e3a6e" stroke-width="5" fill="none"
-                        stroke-linecap="round" />
-                    <rect x="91" y="86" width="8" height="12" rx="4" fill="#1e3a6e" />
-                    <rect x="135" y="86" width="8" height="12" rx="4" fill="#1e3a6e" />
-                    <!-- Hoodie -->
-                    <path d="M95 108 Q95 170 100 185 L130 185 Q135 170 135 108 Q115 115 95 108Z" fill="#1a2a5a" />
-                    <!-- Arms -->
-                    <path d="M95 110 Q70 135 70 155 L85 155 Q90 145 105 125Z" fill="#1a2a5a" />
-                    <path d="M135 110 Q160 130 160 150 L148 155 Q140 145 125 125Z" fill="#1a2a5a" />
-                    <!-- Hands on keyboard -->
-                    <ellipse cx="80" cy="190" rx="12" ry="7" fill="#e2b96f" />
-                    <ellipse cx="153" cy="188" rx="11" ry="7" fill="#e2b96f" />
-                    <!-- Screen glow reflection -->
-                    <ellipse cx="97" cy="140" rx="28" ry="18" fill="#6366f1" opacity="0.04" />
-                    <ellipse cx="97" cy="140" rx="14" ry="9" fill="#6366f1" opacity="0.06" />
-                </svg>
+            <!-- Main hero text - Re-engineered for pure luxury aesthetics -->
+            <style>
+                .glass-card-premium {
+                    position: relative;
+                    padding: 32px 36px;
+                    margin-bottom: 24px;
+                    margin-top: 10px;
+                    background: transparent;
+                    backdrop-filter: none;
+                    -webkit-backdrop-filter: none;
+                    border-radius: 28px;
+                    border: none;
+                    box-shadow: none;
+                    text-align: left;
+                }
+                .hero-headline .line1 {
+                    font-size: 48px; 
+                    color: #000000; /* Pure Black */
+                    font-weight: 900;
+                    font-style: italic;
+                    font-family: 'Space Grotesk', sans-serif;
+                    text-shadow: 0 1px 2px rgba(255,255,255,0.3);
+                    letter-spacing: -1px;
+                }
+                .hero-headline .line2 {
+                    font-size: 56px; 
+                    color: #000000; /* Pure Black */
+                    background: none;
+                    -webkit-text-fill-color: initial;
+                    font-weight: 900;
+                    font-style: italic;
+                    font-family: 'Space Grotesk', sans-serif;
+                    text-shadow: 0 1px 2px rgba(255,255,255,0.3);
+                    letter-spacing: -1.5px;
+                }
+                .stat-box {
+                    text-align: center; position: relative; flex: 1;
+                }
+                .stat-box::after {
+                    content: ''; position: absolute; right: 0; top: 15%; height: 70%; width: 1px;
+                    background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.2), transparent);
+                }
+                .stat-box:last-child::after { display: none; }
+                .stat-number { 
+                    font-size: 42px; 
+                    font-weight: 900; 
+                    font-style: italic;
+                    color: #000000;
+                    font-family: 'Space Grotesk', sans-serif;
+                }
+                .stat-label { 
+                    font-size: 13px; 
+                    color: #000000; 
+                    text-transform: uppercase; 
+                    letter-spacing: 1.5px; 
+                    font-weight: 900; 
+                    font-style: italic;
+                }
+                .role-badge-modern {
+                    background: transparent;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: default;
+                }
+                .role-badge-modern .badge-title {
+                    color: #ffffff !important;
+                    font-weight: 800 !important;
+                    text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+                }
+                .role-badge-modern .badge-sub {
+                    color: #94a3b8 !important;
+                    font-weight: 700;
+                    text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+                }
+            </style>
+            
+            <div class="hero-text" style="padding-bottom: 24px; max-width: 600px; margin: 0 auto; margin-top: auto;">
+                <div class="glass-card-premium" style="background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border: none !important; box-shadow: none !important;">
+                    <h1 class="hero-headline mb-4">
+                        <span class="line1" style="display:block; line-height:1.0;">Transforming</span>
+                        <span class="line2" style="display:block; line-height:1.1;">Rwanda's Assets</span>
+                    </h1>
+                    <p class="hero-desc" style="font-size: 16px; color: #000000 !important; max-width: 480px; line-height: 1.7; margin-bottom: 2.5rem; font-weight: 900 !important; font-style: italic;">
+                        The premier AI-ready, highly sophisticated maintenance network empowering all national universities, polytechnics, and colleges.
+                    </p>
 
-                <!-- Server rack + worker (center) -->
-                <svg class="hero-person p-server" width="200" height="280" viewBox="0 0 200 280" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <!-- Server cabinet -->
-                    <rect x="60" y="60" width="80" height="180" rx="6" fill="#111827" />
-                    <rect x="65" y="65" width="70" height="170" rx="4" fill="#0d1b3d" />
-                    <!-- Server units -->
-                    <rect x="68" y="68" width="64" height="10" rx="2" fill="#1e3a6e" />
-                    <circle cx="122" cy="73" r="3" fill="#10b981" />
-                    <rect x="68" y="82" width="64" height="10" rx="2" fill="#1e3a6e" />
-                    <circle cx="122" cy="87" r="3" fill="#f59e0b" />
-                    <rect x="68" y="96" width="64" height="10" rx="2" fill="#1e3a6e" />
-                    <circle cx="122" cy="101" r="3" fill="#6366f1" />
-                    <rect x="68" y="110" width="64" height="10" rx="2" fill="#1e3a6e" />
-                    <circle cx="122" cy="115" r="3" fill="#10b981" />
-                    <rect x="68" y="124" width="64" height="10" rx="2" fill="#1e3a6e" />
-                    <circle cx="122" cy="129" r="3" fill="#ef4444" />
-                    <rect x="68" y="138" width="64" height="10" rx="2" fill="#1e3a6e" />
-                    <circle cx="122" cy="143" r="3" fill="#10b981" />
-                    <!-- Cable lines -->
-                    <path d="M90 155 Q90 190 80 220" stroke="#06b6d4" stroke-width="1.5" fill="none" opacity="0.4" />
-                    <path d="M100 160 Q102 195 98 225" stroke="#6366f1" stroke-width="1.5" fill="none" opacity="0.4" />
-                    <!-- Person / technician -->
-                    <!-- Hard hat -->
-                    <ellipse cx="125" cy="52" rx="21" ry="9" fill="#f59e0b" />
-                    <ellipse cx="125" cy="56" rx="18" ry="17" fill="#f9d484" />
-                    <!-- Safety vest -->
-                    <path d="M108 78 Q108 140 112 175 L138 175 Q142 140 142 78 Q125 86 108 78Z" fill="#f59e0b" />
-                    <!-- Vest stripes -->
-                    <rect x="108" y="105" width="34" height="5" rx="2" fill="#1a2050" opacity="0.6" />
-                    <rect x="108" y="130" width="34" height="5" rx="2" fill="#1a2050" opacity="0.6" />
-                    <!-- Shirt under vest -->
-                    <path d="M108 78 Q95 85 90 105 L105 108Z" fill="#1e3a6e" />
-                    <path d="M142 78 Q155 85 160 105 L144 108Z" fill="#1e3a6e" />
-                    <!-- Arms working on server -->
-                    <path d="M108 85 Q85 100 68 120 L72 130 Q92 115 112 100Z" fill="#1e3a6e" />
-                    <ellipse cx="67" cy="127" rx="9" ry="6" fill="#f9d484" />
-                    <path d="M142 90 Q158 108 160 140" stroke="#1e3a6e" stroke-width="12" stroke-linecap="round"
-                        fill="none" />
-                    <ellipse cx="161" cy="145" rx="8" ry="6" fill="#f9d484" />
-                    <!-- Legs -->
-                    <rect x="110" y="175" width="12" height="45" rx="4" fill="#1e3a6e" />
-                    <rect x="130" y="175" width="12" height="45" rx="4" fill="#1e3a6e" />
-                    <ellipse cx="116" cy="222" rx="14" ry="7" fill="#0f1320" />
-                    <ellipse cx="136" cy="222" rx="14" ry="7" fill="#0f1320" />
-                    <!-- Server glow -->
-                    <rect x="65" y="65" width="70" height="170" rx="4" fill="url(#serverGlow)" opacity="0.1" />
-                    <defs>
-                        <linearGradient id="serverGlow" x1="100" y1="65" x2="100" y2="235"
-                            gradientUnits="userSpaceOnUse">
-                            <stop offset="0%" stop-color="#6366f1" />
-                            <stop offset="100%" stop-color="#06b6d4" />
-                        </linearGradient>
-                    </defs>
-                </svg>
+                    <!-- Animated Stats Row -->
+                    <div class="d-flex justify-content-between align-items-center mb-5">
+                        <div class="stat-box">
+                            <div class="stat-number">37</div>
+                            <div class="stat-label">Institutions</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">10k+</div>
+                            <div class="stat-label">Devices</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Coverage</div>
+                        </div>
+                    </div>
 
-                <!-- Cleaner with cart (right) -->
-                <svg class="hero-person p-cleaner" width="180" height="270" viewBox="0 0 180 270" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <!-- Cleaning cart -->
-                    <rect x="60" y="180" width="100" height="60" rx="6" fill="#1a2a5a" />
-                    <rect x="65" y="185" width="90" height="50" rx="4" fill="#111827" />
-                    <!-- Cart shelves -->
-                    <rect x="65" y="205" width="90" height="4" rx="2" fill="#1e3a6e" />
-                    <rect x="65" y="220" width="90" height="4" rx="2" fill="#1e3a6e" />
-                    <!-- Cart wheels -->
-                    <circle cx="80" cy="243" r="8" fill="#0f1320" />
-                    <circle cx="80" cy="243" r="4" fill="#1e3a6e" />
-                    <circle cx="140" cy="243" r="8" fill="#0f1320" />
-                    <circle cx="140" cy="243" r="4" fill="#1e3a6e" />
-                    <!-- Cart items (bottles, etc) -->
-                    <rect x="75" y="186" width="10" height="18" rx="3" fill="#06b6d4" opacity="0.8" />
-                    <rect x="90" y="188" width="8" height="16" rx="3" fill="#10b981" opacity="0.8" />
-                    <rect x="102" y="186" width="10" height="18" rx="3" fill="#f59e0b" opacity="0.8" />
-                    <!-- Warning sign on cart -->
-                    <path d="M120 205 L130 220 L140 205 Z" fill="#f59e0b" opacity="0.7" />
-                    <rect x="133" y="209" width="2" height="6" rx="1" fill="#1a2050" />
-                    <!-- Mop handle -->
-                    <rect x="55" y="60" width="6" height="180" rx="3" fill="#1e3a6e" />
-                    <ellipse cx="58" cy="242" rx="22" ry="7" fill="#0d1b3d" />
-                    <!-- Person (woman) -->
-                    <!-- Hair -->
-                    <ellipse cx="100" cy="48" rx="22" ry="24" fill="#1a0a00" />
-                    <path d="M78 48 Q70 70 75 90" stroke="#1a0a00" stroke-width="8" fill="none"
-                        stroke-linecap="round" />
-                    <!-- Face -->
-                    <ellipse cx="100" cy="54" rx="18" ry="20" fill="#c89b7a" />
-                    <!-- Shirt -->
-                    <path d="M82 74 Q82 130 86 170 L114 170 Q118 130 118 74 Q100 82 82 74Z" fill="#1e3a6e" />
-                    <!-- Apron -->
-                    <path d="M88 80 Q88 140 92 170 L108 170 Q112 140 112 80 Q100 86 88 80Z" fill="#f8fafc"
-                        opacity="0.15" />
-                    <!-- Arms -->
-                    <path d="M82 80 Q62 100 60 125" stroke="#1e3a6e" stroke-width="12" stroke-linecap="round"
-                        fill="none" />
-                    <ellipse cx="59" cy="128" rx="8" ry="6" fill="#c89b7a" />
-                    <path d="M118 82 Q132 105 138 130" stroke="#1e3a6e" stroke-width="12" stroke-linecap="round"
-                        fill="none" />
-                    <ellipse cx="140" cy="133" rx="8" ry="6" fill="#c89b7a" />
-                    <!-- Legs -->
-                    <rect x="85" y="170" width="12" height="50" rx="4" fill="#0f1735" />
-                    <rect x="103" y="170" width="12" height="50" rx="4" fill="#0f1735" />
-                    <ellipse cx="91" cy="222" rx="13" ry="7" fill="#0a0f24" />
-                    <ellipse cx="109" cy="222" rx="13" ry="7" fill="#0a0f24" />
-                    <!-- Scooter / extra items -->
-                    <!-- Cart handle -->
-                    <rect x="150" y="145" width="5" height="80" rx="3" fill="#1e3a6e" />
-                    <path d="M118 130 Q140 140 155 145" stroke="#1e3a6e" stroke-width="5" fill="none"
-                        stroke-linecap="round" />
-                </svg>
-
-                <!-- Floor glow -->
-                <div class="scene-floor"></div>
-                <div class="scene-floor-glow"></div>
-            </div>
-
-            <!-- Main hero text -->
-            <div class="hero-text">
-                <h1 class="hero-headline">
-                    <span class="line1">Sign in to</span>
-                    <span class="line2">your Dashboard</span>
-                </h1>
-                <p class="hero-desc">
-                    Rwanda's AI-ready, maintenance management platform for universities, polytechnics, and colleges.
-                </p>
+                    <!-- Role Badges (High End) -->
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="role-badge-modern p-3 rounded-4 d-flex align-items-center gap-3">
+                                <div class="d-flex align-items-center justify-content-center bg-danger bg-opacity-10 rounded-circle" style="width: 42px; height: 42px; box-shadow: 0 2px 8px rgba(0,0,0,0.8);">
+                                    <i class="bi bi-shield-lock text-danger fs-5"></i>
+                                </div>
+                                <div>
+                                    <div class="badge-title text-white fw-bold" style="font-size: 14px;">System Admin</div>
+                                    <div class="badge-sub text-secondary" style="font-size: 11.5px;">Full Control</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="role-badge-modern p-3 rounded-4 d-flex align-items-center gap-3">
+                                <div class="d-flex align-items-center justify-content-center bg-info bg-opacity-10 rounded-circle" style="width: 42px; height: 42px; box-shadow: 0 2px 8px rgba(0,0,0,0.8);">
+                                    <i class="bi bi-tools text-info fs-5"></i>
+                                </div>
+                                <div>
+                                    <div class="badge-title text-white fw-bold" style="font-size: 14px;">Technician</div>
+                                    <div class="badge-sub text-secondary" style="font-size: 11.5px;">Repairs & Auth</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="role-badge-modern p-3 rounded-4 d-flex align-items-center gap-3">
+                                <div class="d-flex align-items-center justify-content-center bg-success bg-opacity-10 rounded-circle" style="width: 42px; height: 42px; box-shadow: 0 2px 8px rgba(0,0,0,0.8);">
+                                    <i class="bi bi-person-badge text-success fs-5"></i>
+                                </div>
+                                <div>
+                                    <div class="badge-title text-white fw-bold" style="font-size: 14px;">Staff / Lab</div>
+                                    <div class="badge-sub text-secondary" style="font-size: 11.5px;">Reporting Issues</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="role-badge-modern p-3 rounded-4 d-flex align-items-center gap-3">
+                                <div class="d-flex align-items-center justify-content-center bg-warning bg-opacity-10 rounded-circle" style="width: 42px; height: 42px; box-shadow: 0 2px 8px rgba(0,0,0,0.8);">
+                                    <i class="bi bi-stars text-warning fs-5"></i>
+                                </div>
+                                <div>
+                                    <div class="badge-title text-white fw-bold" style="font-size: 14px;">Smart Student</div>
+                                    <div class="badge-sub text-secondary" style="font-size: 11.5px;">Gen-Z Eco-System</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- ════════ RIGHT: FORM PANEL ════════ -->
         <div class="form-panel">
-            <!-- RW badge top-right of form side -->
-            <div class="rw-badge-form">
-                <span style="font-weight:700;color:#c7d2fe;font-size:11px;">RW</span>
-                Rwanda National Platform &nbsp;🇷🇼
-            </div>
-
             <div class="login-card">
                 <div class="card-heading">
-                    <h2>Welcome Back 👋</h2>
-                    <p>Sign in to continue your session</p>
+                    <h2 class="d-flex align-items-center gap-2">Welcome Back 👋</h2>
+                    <p>Sign in to your dashboard · <span class="text-indigo fw-bold">Smart University MMS</span></p>
                 </div>
 
                 <!-- Error / Success alerts -->
@@ -1032,10 +1152,7 @@
                     <i class="bi bi-check-circle-fill"></i>
                     <span th:text="${success}"></span>
                 </div>
-                <div th:if="${param.logout}" class="form-alert inf">
-                    <i class="bi bi-info-circle-fill"></i>
-                    You have been signed out successfully.
-                </div>
+                <!-- ... -->
 
                 <form th:action="@{/auth/login}" method="post" id="loginForm">
                     <!-- Email -->
@@ -1048,58 +1165,79 @@
                         </div>
                     </div>
 
-                    <!-- Password -->
+                    <!-- Password row -->
                     <div class="input-group">
                         <div class="input-label">
                             <span>Password</span>
-                            <a href="#">Forgot password?</a>
+                            <a href="#" class="text-indigo">Forgot password?</a>
                         </div>
                         <div class="input-wrap">
                             <i class="bi bi-lock input-icon"></i>
                             <input type="password" name="password" id="pwField" class="input-field"
-                                placeholder="Enter password" required autocomplete="current-password" />
+                                placeholder="Enter password" required />
                             <button type="button" class="btn-eye" onclick="togglePw()">
                                 <i class="bi bi-eye" id="eyeIcon"></i>
                             </button>
                         </div>
                     </div>
 
+                    <!-- Anti-Robot Captcha (High Level) -->
+                    <div class="input-group">
+                        <div class="input-label mb-1">
+                            <span style="color:#f59e0b;"><i class="bi bi-shield-lock-fill me-1"></i> Security Verification</span>
+                        </div>
+                        
+                        <div class="d-flex flex-row align-items-center gap-2">
+                            <!-- The Captcha Image (Inline) -->
+                            <div style="background: rgba(12, 17, 40, 0.9); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 8px; padding: 2px; text-align: center; height: 36px;">
+                                <img th:src="${captchaImage}" alt="Security Captcha" style="border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); width: 100px; height: 30px;" />
+                            </div>
+                            
+                            <!-- The User Answer Input (Inline) -->
+                            <div class="input-wrap flex-grow-1">
+                                <i class="bi bi-upc-scan input-icon" style="color:#f59e0b; font-size: 13px;"></i>
+                                <input type="text" name="captchaAnswer" id="captchaField" class="input-field"
+                                    placeholder="Type code above (Not a robot)" style="border-color: rgba(245, 158, 11, 0.3); font-family: monospace; letter-spacing: 0.5px; padding: 6px 12px 6px 32px; height: 36px; font-size: 12px;" required autocomplete="off" />
+                            </div>
+                        </div>
+                    </div>
+
                     <button type="submit" class="btn-submit" id="submitBtn">
-                        <span class="spinner spinner-border spinner-border-sm"></span>
-                        <span class="btn-label"><i class="bi bi-box-arrow-in-right me-1"></i>Sign In</span>
+                        <span class="spinner-border spinner-border-sm me-2" style="display:none"></span>
+                        <span><i class="bi bi-box-arrow-in-right me-2"></i>Sign In to Dashboard</span>
                     </button>
                 </form>
 
                 <!-- Quick demo accounts -->
-                <div class="form-divider">Quick login as</div>
+                <div style="text-align: center; font-size: 11px; color: #64748b; margin-top: 12px;">Click below is default account</div>
                 <div class="demo-grid">
-                    <div class="demo-card dc-admin" onclick="quickLogin('admin@smartuni.rw','Admin@2024')">
-                        <div class="dc-icon"><i class="bi bi-shield-fill" style="color:#f87171"></i></div>
-                        <div>
-                            <div class="dc-title">System Admin</div>
-                            <div class="dc-email">admin@smartuni.rw</div>
+                    <!-- Admin -->
+                    <div class="demo-card" onclick="quickLogin('admin@smartuni.rw','Admin@2024')">
+                        <div class="dc-icon-wrapper" style="background: rgba(244, 63, 94, 0.1); border-color: rgba(244, 63, 94, 0.2);">
+                            <i class="bi bi-shield-fill" style="color:#f87171"></i>
                         </div>
+                        <div class="dc-label">Admin</div>
                     </div>
-                    <div class="demo-card dc-tech" onclick="quickLogin('technician1@smartuni.rw','Tech@2024')">
-                        <div class="dc-icon"><i class="bi bi-wrench-adjustable" style="color:#22d3ee"></i></div>
-                        <div>
-                            <div class="dc-title">Technician</div>
-                            <div class="dc-email">technician1@smartuni.rw</div>
+                    <!-- Staff -->
+                    <div class="demo-card" onclick="quickLogin('charliestaff@smartuni.rw','Password@2024')">
+                        <div class="dc-icon-wrapper" style="background: rgba(52, 211, 153, 0.1); border-color: rgba(52, 211, 153, 0.2);">
+                            <i class="bi bi-person-badge-fill" style="color:#34d399"></i>
                         </div>
+                        <div class="dc-label">Staff</div>
                     </div>
-                    <div class="demo-card dc-staff" onclick="quickLogin('staff1@smartuni.rw','Staff@2024')">
-                        <div class="dc-icon"><i class="bi bi-person-badge-fill" style="color:#34d399"></i></div>
-                        <div>
-                            <div class="dc-title">Staff / Lab</div>
-                            <div class="dc-email">staff1@smartuni.rw</div>
+                    <!-- Student/Cleaner -->
+                    <div class="demo-card" onclick="quickLogin('edwardcleaner@smartuni.rw','Password@2024')">
+                        <div class="dc-icon-wrapper" style="background: rgba(251, 191, 36, 0.1); border-color: rgba(251, 191, 36, 0.2);">
+                            <i class="bi bi-person-fill" style="color:#fbbf24"></i>
                         </div>
+                        <div class="dc-label">Cleaner/Student</div>
                     </div>
-                    <div class="demo-card dc-clean" onclick="quickLogin('cleaner1@smartuni.rw','Clean@2024')">
-                        <div class="dc-icon"><i class="bi bi-person-fill" style="color:#fbbf24"></i></div>
-                        <div>
-                            <div class="dc-title">Cleaner / Student</div>
-                            <div class="dc-email">cleaner1@smartuni.rw</div>
+                    <!-- Technician -->
+                    <div class="demo-card" onclick="quickLogin('alicetechnic@smartuni.rw','Password@2024')">
+                        <div class="dc-icon-wrapper" style="background: rgba(34, 211, 238, 0.1); border-color: rgba(34, 211, 238, 0.2);">
+                            <i class="bi bi-wrench-adjustable" style="color:#22d3ee"></i>
                         </div>
+                        <div class="dc-label">Technician</div>
                     </div>
                 </div>
 
@@ -1121,9 +1259,13 @@
         function quickLogin(email, pw) {
             document.getElementById('emailField').value = email;
             document.getElementById('pwField').value = pw;
-            const btn = document.getElementById('submitBtn');
-            btn.style.transform = 'scale(0.97)';
-            setTimeout(() => btn.style.transform = '', 160);
+            const captcha = document.getElementById('captchaField');
+            if (captcha) {
+                captcha.focus();
+                // Add a gentle pulse animation to alert the user
+                captcha.style.boxShadow = '0 0 0 3px rgba(245, 158, 11, 0.4)';
+                setTimeout(() => captcha.style.boxShadow = '', 400);
+            }
         }
 
         document.getElementById('loginForm').addEventListener('submit', function () {

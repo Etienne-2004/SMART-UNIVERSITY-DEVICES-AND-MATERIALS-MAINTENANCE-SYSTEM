@@ -1,6 +1,7 @@
 package com.example.smart_university_devices_and_materials_maintanance_system.repositories;
 
 import com.example.smart_university_devices_and_materials_maintanance_system.entities.MaintenanceRequest;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,10 @@ import java.util.List;
 
 @Repository
 public interface MaintenanceRequestRepository extends JpaRepository<MaintenanceRequest, Long> {
+
+    @EntityGraph(attributePaths = {"university", "college", "device", "material", "reportedBy", "assignedTechnician", "verifiedBy"})
+    @org.springframework.lang.NonNull
+    List<MaintenanceRequest> findAll();
 
     List<MaintenanceRequest> findByStatus(MaintenanceRequest.TaskStatus status);
 

@@ -38,8 +38,8 @@
                             <tr>
                                 <th>#</th>
                                 <th>Name</th>
-                                <th>Serial</th>
-                                <th>Category</th>
+                                <th>Device ID</th>
+                                <th>Description</th>
                                 <th>Status</th>
                                 <th>Location</th>
                                 <th>Reported At</th>
@@ -49,15 +49,15 @@
                         <tbody>
                             <tr th:each="d: ${devices}">
                                 <td th:text="${d.id}" class="text-muted small"></td>
-                                <td th:text="${d.name}">Device Name</td>
-                                <td th:text="${d.serialNumber}">S/N</td>
-                                <td th:text="${d.category}">CATEGORY</td>
+                                <td th:text="${d.deviceName}">Device Name</td>
+                                <td th:text="${d.deviceId}">S/N</td>
+                                <td th:text="${d.description != null and d.description.length() &gt; 25 ? d.description.substring(0,25) + '...' : d.description ?: '—'}">DESC</td>
                                 <td>
                                     <span class="badge"
-                                        th:classappend="${d.status.name() == 'OPERATIONAL' ? 'bg-success' : 'bg-danger'}"
+                                        th:classappend="${d.status.name() == 'ACTIVE' ? 'bg-success' : 'bg-danger'}"
                                         th:text="${d.status}">STATUS</span>
                                 </td>
-                                <td th:text="${d.location ?: '—'}">Location</td>
+                                <td th:text="${d.roomLocation ?: '—'}">Location</td>
                                 <td th:text="${#temporals.format(d.createdAt,'dd MMM yyyy')}">Date</td>
                                 <td>
                                     <a href="#" class="btn btn-sm btn-outline-primary" title="Details"><i

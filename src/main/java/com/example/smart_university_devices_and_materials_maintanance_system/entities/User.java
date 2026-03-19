@@ -62,7 +62,7 @@ public class User {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
         if (accountStatus == null)
-            accountStatus = AccountStatus.PENDING;
+            accountStatus = AccountStatus.PENDING_EMAIL;
     }
 
     @PreUpdate
@@ -75,6 +75,6 @@ public class User {
     }
 
     public enum AccountStatus {
-        PENDING, ACTIVE, SUSPENDED, REJECTED
+        PENDING_EMAIL, PENDING_APPROVAL, ACTIVE, SUSPENDED, REJECTED
     }
 }
