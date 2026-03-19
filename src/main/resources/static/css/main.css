@@ -534,6 +534,7 @@ body {
   gap: 12px;
   margin-right: 16px;
   flex: 1;
+  flex-wrap: wrap;
 }
 
 .navbar-link {
