@@ -116,6 +116,28 @@
                     </table>
                 </div>
             </div>
+
+            <!-- Smart Quick Actions - Match Navigation -->
+            <div class="panel mb-4">
+                <div class="panel-head">
+                    <div class="panel-title"><i class="bi bi-lightning-charge-fill me-2" style="color:#fbbf24"></i>Smart
+                        Actions</div>
+                </div>
+                <div class="qaction-grid">
+                    <!-- Dynamic quick actions based on navigation items -->
+                    <th:block th:each="navItem : ${navigationItems}">
+                        <a th:href="${navItem.url}" class="qaction-item" th:title="${navItem.description}">
+                            <div class="qa-icon">
+                                <i th:class="'bi ' + ${navItem.icon}"></i>
+                                <span class="qa-badge" 
+                                      th:if="${navItem.badge != null}" 
+                                      th:text="${navItem.badge}">0</span>
+                            </div>
+                            <span th:text="${navItem.name}">Action</span>
+                        </a>
+                    </th:block>
+                </div>
+            </div>
         </main>
 
         <!-- FOOTER -->
