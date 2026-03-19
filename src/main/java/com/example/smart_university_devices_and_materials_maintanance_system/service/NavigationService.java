@@ -154,58 +154,86 @@ public class NavigationService {
     }
 
     /**
-     * Technician-specific navigation focused on tasks
+     * Technician-specific navigation with admin-style structure
      */
     private List<NavigationItem> getTechnicianNavigation(User technician, String currentPath) {
         List<NavigationItem> items = new ArrayList<>();
 
+        // Get real-time counts for badges
+        int pendingUsers = userService.getPendingApprovals().size();
+        int pendingDevices = deviceService.getPendingApproval().size();
+        int pendingMaterials = materialService.getPendingApproval().size();
         int assignedTasks = maintenanceService.getAssignedTasks(technician.getId()).size();
-        int completedTasks = maintenanceService.getCompletedTasks(technician.getId()).size();
         int unreadNotifications = notificationService.countUnread(technician.getId());
 
+        // Dashboard - Always first with notification badge
         items.add(new NavigationItem(
-            "My Dashboard", 
+            "Dashboard", 
             "bi-speedometer2", 
             "/technician/dashboard", 
             unreadNotifications > 0 ? String.valueOf(unreadNotifications) : null,
             currentPath.contains("/technician/dashboard"),
-            "Task overview & performance"
+            "Technical operations overview"
         ));
 
+        // User Management - Shows pending count (technician view)
         items.add(new NavigationItem(
-            "My Tasks", 
-            "bi-clipboard-check", 
-            "/technician/tasks", 
+            "Users", 
+            "bi-people-fill", 
+            "/technician/users", 
+            pendingUsers > 0 ? String.valueOf(pendingUsers) : null,
+            currentPath.contains("/technician/users"),
+            "View user accounts & requests"
+        ));
+
+        // Device Management - Shows pending approvals
+        items.add(new NavigationItem(
+            "Devices", 
+            "bi-laptop-fill", 
+            "/technician/devices", 
+            pendingDevices > 0 ? String.valueOf(pendingDevices) : null,
+            currentPath.contains("/technician/devices"),
+            "Monitor device status & repairs"
+        ));
+
+        // Material Management - Shows pending approvals
+        items.add(new NavigationItem(
+            "Materials", 
+            "bi-box-fill", 
+            "/technician/materials", 
+            pendingMaterials > 0 ? String.valueOf(pendingMaterials) : null,
+            currentPath.contains("/technician/materials"),
+            "Manage learning materials"
+        ));
+
+        // Maintenance Operations - Shows assigned tasks
+        items.add(new NavigationItem(
+            "Maintenance", 
+            "bi-tools", 
+            "/technician/maintenance", 
             assignedTasks > 0 ? String.valueOf(assignedTasks) : null,
-            currentPath.contains("/technician/tasks"),
-            "Assigned maintenance tasks"
+            currentPath.contains("/technician/maintenance"),
+            "View & manage maintenance tasks"
         ));
 
+        // Analytics - Technical insights
         items.add(new NavigationItem(
-            "Completed", 
-            "bi-check-circle", 
-            "/technician/completed", 
-            String.valueOf(completedTasks),
-            currentPath.contains("/technician/completed"),
-            "Task history"
-        ));
-
-        items.add(new NavigationItem(
-            "Report Issue", 
-            "bi-exclamation-triangle", 
-            "/technician/report", 
+            "Analytics", 
+            "bi-bar-chart-fill", 
+            "/technician/analytics", 
             null,
-            currentPath.contains("/technician/report"),
-            "Report new issues"
+            currentPath.contains("/technician/analytics"),
+            "Technical performance metrics"
         ));
 
+        // Learning Centre - Training resources
         items.add(new NavigationItem(
             "Learning", 
-            "bi-book-fill", 
+            "bi-mortarboard-fill", 
             "/learning", 
             null,
             currentPath.contains("/learning"),
-            "Training materials"
+            "Technical training resources"
         ));
 
         return items;
