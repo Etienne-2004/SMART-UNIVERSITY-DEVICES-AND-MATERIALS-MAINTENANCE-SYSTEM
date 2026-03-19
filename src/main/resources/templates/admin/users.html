@@ -14,46 +14,14 @@
         <nav th:replace="~{fragments/layout :: navbar('User Management')}"></nav>
 
         <main class="page-content">
-            <h2 class="mb-4 d-flex align-items-center"><i class="bi bi-people-fill me-2 text-indigo"></i> User
-                Management</h2>
-
-            <div th:if="${success}" class="alert alert-success alert-dismissible fade show mb-4">
+            <!-- Alerts -->
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show mb-4" role="alert">
                 <i class="bi bi-check-circle-fill me-2"></i><span th:text="${success}"></span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-
-            <!-- Pending Approvals -->
-            <div class="panel mb-4" th:if="${not #lists.isEmpty(pendingUsers)}">
-                <div class="panel-head">
-                    <div class="panel-title text-warning"><i class="bi bi-person-exclamation me-2"></i>Pending Approvals
-                    </div>
-                </div>
-                <div class="table-responsive">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>University</th>
-                                <th>Registered</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="u: ${pendingUsers}">
-                                <td th:text="${u.fullName}"></td>
-                                <td th:text="${u.email}"></td>
-                                <td><span class="badge bg-secondary" th:text="${u.role}"></span></td>
-                                <td th:text="${u.university?.abbreviation ?: '—'}"></td>
-                                <td th:text="${#temporals.format(u.createdAt,'dd MMM yyyy')}"></td>
-                                <td>
-                                    <form th:action="@{'/admin/users/' + ${u.id} + '/approve'}" method="post"
-                                        style="display:inline">
-                                        <button type="submit" class="btn btn-sm btn-success"><i class="bi bi-check"></i>
-                                            Approve</button>
-                                    </form>
-                                </td>
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show mb-4">
+                <i class="bi bi-exclamation-circle-fill me-2"></i><span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                             </tr>
                         </tbody>
                     </table>

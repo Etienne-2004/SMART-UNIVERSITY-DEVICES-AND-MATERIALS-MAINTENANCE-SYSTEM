@@ -60,10 +60,41 @@ public class AdminController {
     // ── User Management ───────────────────────────────────────────────────────
 
     @GetMapping("/users")
-    public String users(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        model.addAttribute("admin", getCurrentUser(userDetails));
-        model.addAttribute("users", userService.getAllUsers());
+    public String users(
+            @AuthenticationPrincipal UserDetails userDetails, 
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "fullName") String sort,
+            @RequestParam(defaultValue = "asc") String direction,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String roleFilter,
+            @RequestParam(required = false) String statusFilter,
+            Model model) {
+        
+        User admin = getCurrentUser(userDetails);
+        
+        // Create pageable request
+        org.springframework.data.domain.Pageable pageable = 
+            org.springframework.data.domain.PageRequest.of(page, size, 
+                org.springframework.data.domain.Sort.Direction.fromString(direction), sort);
+        
+        // Get filtered and paginated users
+        org.springframework.data.domain.Page<User> userPage = userService.getUsersWithFilters(
+            search, roleFilter, statusFilter, pageable);
+        
+        model.addAttribute("admin", admin);
+        model.addAttribute("users", userPage.getContent());
         model.addAttribute("pendingUsers", userService.getPendingApprovals());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", userPage.getTotalPages());
+        model.addAttribute("totalItems", userPage.getTotalElements());
+        model.addAttribute("size", size);
+        model.addAttribute("sort", sort);
+        model.addAttribute("direction", direction);
+        model.addAttribute("search", search);
+        model.addAttribute("roleFilter", roleFilter);
+        model.addAttribute("statusFilter", statusFilter);
+        
         return "admin/users";
     }
 
