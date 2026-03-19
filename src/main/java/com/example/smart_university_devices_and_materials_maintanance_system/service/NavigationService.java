@@ -56,11 +56,11 @@ public class NavigationService {
             case TECHNICIAN:
                 items = getTechnicianNavigation(currentUser, currentPath);
                 break;
-            case STUDENT:
-                items = getStudentNavigation(currentUser, currentPath);
+            case STAFF:
+                items = getStaffNavigation(currentUser, currentPath);
                 break;
-            case LECTURER:
-                items = getLecturerNavigation(currentUser, currentPath);
+            case CLEANER_STUDENT:
+                items = getCleanerNavigation(currentUser, currentPath);
                 break;
         }
 
@@ -348,6 +348,95 @@ public class NavigationService {
             null,
             currentPath.contains("/learning"),
             "Educational resources"
+        ));
+
+        return items;
+    }
+
+    /**
+     * Staff-specific navigation focused on resource management
+     */
+    private List<NavigationItem> getStaffNavigation(User staff, String currentPath) {
+        List<NavigationItem> items = new ArrayList<>();
+
+        int pendingDevices = deviceService.getPendingApproval().size();
+        int pendingMaterials = materialService.getPendingApproval().size();
+        int myRequests = maintenanceService.getMyRequests(staff.getId()).size();
+        int unreadNotifications = notificationService.countUnread(staff.getId());
+
+        items.add(new NavigationItem(
+            "Dashboard", 
+            "bi-speedometer2", 
+            "/staff/dashboard", 
+            unreadNotifications > 0 ? String.valueOf(unreadNotifications) : null,
+            currentPath.contains("/staff/dashboard"),
+            "Staff operations overview"
+        ));
+
+        items.add(new NavigationItem(
+            "Register Device", 
+            "bi-laptop-fill", 
+            "/staff/devices/add", 
+            pendingDevices > 0 ? String.valueOf(pendingDevices) : null,
+            currentPath.contains("/staff/devices"),
+            "Register new devices"
+        ));
+
+        items.add(new NavigationItem(
+            "Report Material", 
+            "bi-box-fill", 
+            "/staff/materials/add", 
+            pendingMaterials > 0 ? String.valueOf(pendingMaterials) : null,
+            currentPath.contains("/staff/materials"),
+            "Report material issues"
+        ));
+
+        items.add(new NavigationItem(
+            "Learning", 
+            "bi-mortarboard-fill", 
+            "/learning", 
+            null,
+            currentPath.contains("/learning"),
+            "Training resources"
+        ));
+
+        return items;
+    }
+
+    /**
+     * Cleaner-specific navigation focused on maintenance reporting
+     */
+    private List<NavigationItem> getCleanerNavigation(User cleaner, String currentPath) {
+        List<NavigationItem> items = new ArrayList<>();
+
+        int myReports = maintenanceService.getMyRequests(cleaner.getId()).size();
+        int unreadNotifications = notificationService.countUnread(cleaner.getId());
+
+        items.add(new NavigationItem(
+            "Dashboard", 
+            "bi-speedometer2", 
+            "/cleaner/dashboard", 
+            unreadNotifications > 0 ? String.valueOf(unreadNotifications) : null,
+            currentPath.contains("/cleaner/dashboard"),
+            "Maintenance overview"
+        ));
+
+        items.add(new NavigationItem(
+            "New Report", 
+            "bi-plus-circle-fill", 
+            "/cleaner/report", 
+            null,
+            currentPath.contains("/cleaner/report"),
+            "Report new issues"
+        ));
+
+        items.add(new NavigationItem(
+            "Learning", 
+            "bi-mortarboard-fill", 
+            "/learning", 
+            null,
+            currentPath.contains("/learning"),
+            "Training resources"
         ));
 
         return items;
