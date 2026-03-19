@@ -146,6 +146,37 @@ cd SMART-UNIVERSITY-DEVICES-AND-MATERIALS-MAINTENANCE-SYSTEM
 - ✅ Role-appropriate terminology
 - ✅ Professional user experience
 
+### **Phase 7: Authentication & Security**
+- ✅ **Login System**: Secure user authentication with OTP verification
+- ✅ **Role-Based Access**: ADMIN, TECHNICIAN, STAFF, CLEANER_STUDENT roles
+- ✅ **JWT/Security Configuration**: Spring Security with comprehensive security model
+- ✅ **Security Model Explanation**: Detailed security architecture documentation
+- ✅ **Auth Endpoints**: Complete authentication endpoints available on GitHub
+- ✅ **Security Phase Submission**: Phase 7 security implementation completed (14 Mar – 20 Mar 2026)
+
+#### **🔐 Security Features:**
+- **Two-Factor Authentication**: OTP-based login system
+- **Role-Based Authorization**: Granular access control by user role
+- **Session Management**: Secure session handling and timeout
+- **Password Security**: Encrypted password storage with BCrypt
+- **CSRF Protection**: Cross-site request forgery prevention
+- **Input Validation**: Comprehensive input sanitization
+
+#### **🛡️ Security Architecture:**
+- **Spring Security Framework**: Enterprise-grade security implementation
+- **JWT Token Management**: Secure token-based authentication
+- **Role Hierarchy**: Proper role-based access control
+- **Security Filters**: Custom authentication and authorization filters
+- **Secure Endpoints**: Protected API endpoints with role validation
+
+#### **📊 Authentication Flow:**
+1. **Login Request**: User submits credentials
+2. **OTP Generation**: System generates one-time password
+3. **OTP Verification**: User verifies identity with OTP
+4. **JWT Token**: Secure token issued for session
+5. **Role-Based Access**: User access based on assigned role
+6. **Session Management**: Secure session handling throughout
+
 ## 📞 Support & Contact
 
 ### **Technical Support**
