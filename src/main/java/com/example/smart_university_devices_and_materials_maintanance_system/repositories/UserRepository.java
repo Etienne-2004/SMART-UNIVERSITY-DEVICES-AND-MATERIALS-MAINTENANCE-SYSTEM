@@ -55,5 +55,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.role = :role AND u.accountStatus = :status")
     Page<User> findByRoleAndAccountStatus(User.Role role, User.AccountStatus status, Pageable pageable);
 
-    List<User> findByAccountStatus(User.AccountStatus.PENDING_APPROVAL);
 }
+
