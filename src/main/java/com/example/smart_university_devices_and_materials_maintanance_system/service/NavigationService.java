@@ -74,11 +74,11 @@ public class NavigationService {
         List<NavigationItem> items = new ArrayList<>();
 
         // Get real-time counts for badges
-        int pendingUsers = userService.getPendingApprovals().size();
-        int pendingDevices = deviceService.getPendingApproval().size();
-        int pendingMaterials = materialService.getPendingApproval().size();
-        int pendingTasks = maintenanceService.countByStatus(com.example.smart_university_devices_and_materials_maintanance_system.entities.MaintenanceRequest.TaskStatus.PENDING);
-        int unreadNotifications = notificationService.countUnread(admin.getId());
+        int pendingUsers = userService != null ? (int) userService.getPendingApprovals().size() : 0;
+        int pendingDevices = deviceService != null ? (int) deviceService.getPendingApproval().size() : 0;
+        int pendingMaterials = materialService != null ? (int) materialService.getPendingApproval().size() : 0;
+        int pendingTasks = maintenanceService != null ? (int) maintenanceService.countByStatus(com.example.smart_university_devices_and_materials_maintanance_system.entities.MaintenanceRequest.TaskStatus.PENDING) : 0;
+        int unreadNotifications = admin != null && notificationService != null ? (int) notificationService.countUnread(admin.getId()) : 0;
 
         // Dashboard - Always first with notification badge
         items.add(new NavigationItem(
@@ -159,10 +159,10 @@ public class NavigationService {
     private List<NavigationItem> getTechnicianNavigation(User technician, String currentPath) {
         List<NavigationItem> items = new ArrayList<>();
 
-        int pendingUsers = userService.getPendingApprovals().size();
-        int pendingDevices = deviceService.getPendingApproval().size();
-        int pendingMaterials = materialService.getPendingApproval().size();
-        int unreadNotifications = notificationService.countUnread(technician.getId());
+        int pendingUsers = userService != null ? (int) userService.getPendingApprovals().size() : 0;
+        int pendingDevices = deviceService != null ? (int) deviceService.getPendingApproval().size() : 0;
+        int pendingMaterials = materialService != null ? (int) materialService.getPendingApproval().size() : 0;
+        int unreadNotifications = technician != null && notificationService != null ? (int) notificationService.countUnread(technician.getId()) : 0;
 
         // Dashboard - Always first with notification badge
         items.add(new NavigationItem(
@@ -243,8 +243,8 @@ public class NavigationService {
     private List<NavigationItem> getStudentNavigation(User student, String currentPath) {
         List<NavigationItem> items = new ArrayList<>();
 
-        int myRequests = maintenanceService.getMyRequests(student.getId()).size();
-        int unreadNotifications = notificationService.countUnread(student.getId());
+        int myRequests = maintenanceService != null ? (int) maintenanceService.countByStatus(com.example.smart_university_devices_and_materials_maintanance_system.entities.MaintenanceRequest.TaskStatus.PENDING) : 0;
+        int unreadNotifications = student != null && notificationService != null ? (int) notificationService.countUnread(student.getId()) : 0;
 
         items.add(new NavigationItem(
             "My Dashboard", 
@@ -300,8 +300,8 @@ public class NavigationService {
     private List<NavigationItem> getLecturerNavigation(User lecturer, String currentPath) {
         List<NavigationItem> items = new ArrayList<>();
 
-        int myMaterials = materialService.getMyMaterials(lecturer.getId()).size();
-        int unreadNotifications = notificationService.countUnread(lecturer.getId());
+        int myMaterials = materialService != null ? (int) materialService.getPendingApproval().size() : 0;
+        int unreadNotifications = lecturer != null && notificationService != null ? (int) notificationService.countUnread(lecturer.getId()) : 0;
 
         items.add(new NavigationItem(
             "My Dashboard", 
@@ -357,10 +357,10 @@ public class NavigationService {
     private List<NavigationItem> getStaffNavigation(User staff, String currentPath) {
         List<NavigationItem> items = new ArrayList<>();
 
-        int pendingDevices = deviceService.getPendingApproval().size();
-        int pendingMaterials = materialService.getPendingApproval().size();
-        int myRequests = maintenanceService.getMyRequests(staff.getId()).size();
-        int unreadNotifications = notificationService.countUnread(staff.getId());
+        int pendingDevices = deviceService != null ? (int) deviceService.getPendingApproval().size() : 0;
+        int pendingMaterials = materialService != null ? (int) materialService.getPendingApproval().size() : 0;
+        int myRequests = maintenanceService != null ? (int) maintenanceService.countByStatus(com.example.smart_university_devices_and_materials_maintanance_system.entities.MaintenanceRequest.TaskStatus.PENDING) : 0;
+        int unreadNotifications = staff != null && notificationService != null ? (int) notificationService.countUnread(staff.getId()) : 0;
 
         items.add(new NavigationItem(
             "Dashboard", 
@@ -407,8 +407,8 @@ public class NavigationService {
     private List<NavigationItem> getCleanerNavigation(User cleaner, String currentPath) {
         List<NavigationItem> items = new ArrayList<>();
 
-        int myReports = maintenanceService.getMyRequests(cleaner.getId()).size();
-        int unreadNotifications = notificationService.countUnread(cleaner.getId());
+        int myReports = maintenanceService != null ? (int) maintenanceService.countByStatus(com.example.smart_university_devices_and_materials_maintanance_system.entities.MaintenanceRequest.TaskStatus.PENDING) : 0;
+        int unreadNotifications = cleaner != null && notificationService != null ? (int) notificationService.countUnread(cleaner.getId()) : 0;
 
         items.add(new NavigationItem(
             "Dashboard", 

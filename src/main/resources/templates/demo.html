@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Users - Smart University MMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e1b4b 0%, #06081a 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+        .demo-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+        }
+        .demo-card:hover {
+            transform: translateY(-5px);
+        }
+        .role-badge {
+            font-size: 0.8rem;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 600;
+        }
+        .admin { background: #dc3545; }
+        .technician { background: #fd7e14; }
+        .staff { background: #20c997; }
+        .cleaner { background: #6f42c1; }
+        .login-btn {
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .login-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="text-center mb-5">
+                    <h1 class="display-4 fw-bold mb-3">
+                        <i class="bi bi-university me-3"></i>Smart University MMS Demo
+                    </h1>
+                    <p class="lead">Test all role-based dashboards with demo accounts</p>
+                    <div class="mt-4">
+                        <a href="/login" class="btn btn-outline-light btn-lg me-3">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Go to Login
+                        </a>
+                        <button onclick="quickLogin()" class="btn btn-success btn-lg">
+                            <i class="bi bi-lightning-charge me-2"></i>Quick Demo Login
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Admin User -->
+                    <div class="col-md-6">
+                        <div class="demo-card">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-person-fill fs-1 me-3 text-danger"></i>
+                                <div>
+                                    <h4 class="mb-1">System Administrator</h4>
+                                    <span class="role-badge admin">ADMIN</span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <strong>Email:</strong> admin@smartuni.rw<br>
+                                <strong>Password:</strong> Admin@2024
+                            </div>
+                            <div class="mb-3">
+                                <strong>Access:</strong> Full system control<br>
+                                <strong>Dashboard:</strong> /admin/dashboard
+                            </div>
+                            <button onclick="loginAs('admin', 'Admin@2024')" class="btn login-btn w-100">
+                                <i class="bi bi-shield-check me-2"></i>Login as Admin
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Technician Users -->
+                    <div class="col-md-6">
+                        <div class="demo-card">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-tools fs-1 me-3 text-warning"></i>
+                                <div>
+                                    <h4 class="mb-1">Technician Users</h4>
+                                    <span class="role-badge technician">TECHNICIAN</span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <strong>Emails:</strong> alicetechnic@smartuni.rw, bobtech@smartuni.rw, georgetech@smartuni.rw<br>
+                                <strong>Passwords:</strong> Password@2024 (for all)
+                            </div>
+                            <div class="mb-3">
+                                <strong>Access:</strong> Device & Material Management<br>
+                                <strong>Dashboard:</strong> /technician/dashboard
+                            </div>
+                            <button onclick="loginAs('alicetechnic', 'Password@2024')" class="btn login-btn w-100">
+                                <i class="bi bi-wrench me-2"></i>Login as Technician
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Staff Users -->
+                    <div class="col-md-6">
+                        <div class="demo-card">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-briefcase-fill fs-1 me-3 text-success"></i>
+                                <div>
+                                    <h4 class="mb-1">Staff Users</h4>
+                                    <span class="role-badge staff">STAFF</span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <strong>Emails:</strong> charliestaff@smartuni.rw, dianastaff@smartuni.rw, hannahstaff@smartuni.rw<br>
+                                <strong>Passwords:</strong> Password@2024 (for all)
+                            </div>
+                            <div class="mb-3">
+                                <strong>Access:</strong> Resource Management<br>
+                                <strong>Dashboard:</strong> /staff/dashboard
+                            </div>
+                            <button onclick="loginAs('charliestaff', 'Password@2024')" class="btn login-btn w-100">
+                                <i class="bi bi-clipboard-data me-2"></i>Login as Staff
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Cleaner/Student Users -->
+                    <div class="col-md-6">
+                        <div class="demo-card">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-broom-fill fs-1 me-3 text-info"></i>
+                                <div>
+                                    <h4 class="mb-1">Cleaner/Student Users</h4>
+                                    <span class="role-badge cleaner">CLEANER_STUDENT</span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <strong>Emails:</strong> edwardcleaner@smartuni.rw, fionastudent@smartuni.rw, iancleaner@smartuni.rw, juliastudent@smartuni.rw<br>
+                                <strong>Passwords:</strong> Password@2024 (for all)
+                            </div>
+                            <div class="mb-3">
+                                <strong>Access:</strong> Maintenance Reporting<br>
+                                <strong>Dashboard:</strong> /cleaner/dashboard
+                            </div>
+                            <button onclick="loginAs('edwardcleaner', 'Password@2024')" class="btn login-btn w-100">
+                                <i class="bi bi-stars me-2"></i>Login as Cleaner
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Features -->
+                <div class="demo-card mt-4">
+                    <h3 class="text-center mb-4">
+                        <i class="bi bi-gear-fill me-2"></i>Available System Features
+                    </h3>
+                    <div class="row text-center">
+                        <div class="col-md-3 mb-3">
+                            <i class="bi bi-people-fill fs-1 text-primary mb-2"></i>
+                            <h5>User Management</h5>
+                            <p class="small">Role-based access control</p>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <i class="bi bi-laptop-fill fs-1 text-warning mb-2"></i>
+                            <h5>Device Management</h5>
+                            <p class="small">Asset tracking & maintenance</p>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <i class="bi bi-box-fill fs-1 text-success mb-2"></i>
+                            <h5>Material Management</h5>
+                            <p class="small">Inventory & requests</p>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <i class="bi bi-graph-up fs-1 text-info mb-2"></i>
+                            <h5>Analytics</h5>
+                            <p class="small">Reports & insights</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function loginAs(username, password) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/auth/login';
+            
+            const emailField = document.createElement('input');
+            emailField.type = 'hidden';
+            emailField.name = 'email';
+            emailField.value = username + '@smartuni.rw';
+            
+            const passwordField = document.createElement('input');
+            passwordField.type = 'hidden';
+            passwordField.name = 'password';
+            passwordField.value = password;
+            
+            form.appendChild(emailField);
+            form.appendChild(passwordField);
+            document.body.appendChild(form);
+            form.submit();
+        }
+        
+        function quickLogin() {
+            loginAs('admin', 'Admin@2024');
+        }
+    </script>
+</body>
+</html>
