@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head(${lesson.title})}"></head>
+
+<body class="app-body">
+
+    <!-- SIDEBAR -->
+    <aside th:replace="~{fragments/layout :: sidebar('learning')}"></aside>
+
+    <!-- MAIN -->
+    <div class="main-content" id="mainContent">
+        <!-- NAVBAR -->
+        <nav th:replace="~{fragments/layout :: navbar('Learning Centre')}"></nav>
+
+        <main class="page-content">
+
+            <!-- ── Breadcrumb ──────────────────────────────────────────── -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb" style="background:transparent;padding:0">
+                    <li class="breadcrumb-item"><a th:href="@{/learning}" class="text-indigo"><i
+                                class="bi bi-journal-richtext me-1"></i>Learning Centre</a></li>
+                    <li class="breadcrumb-item active" th:text="${lesson.title}">Lesson</li>
+                </ol>
+            </nav>
+
+            <div class="row g-4">
+
+                <!-- ── Lesson Content ──────────────────────────────────── -->
+                <div class="col-lg-8">
+                    <div class="panel">
+                        <div class="panel-head"
+                            style="background:linear-gradient(135deg,#312e81,#4338ca);border-radius:12px 12px 0 0">
+                            <div style="width:100%">
+                                <span class="lesson-tag mb-2 d-inline-block"
+                                    th:classappend="'tag-' + ${lesson.category}"
+                                    th:text="${lesson.category}">category</span>
+                                <div class="panel-title text-white" style="font-size:1.3rem" th:text="${lesson.title}">
+                                    Title</div>
+                                <div class="text-white" style="opacity:.7;font-size:0.8rem;margin-top:4px"
+                                    th:text="'Lesson ' + ${lessonNumber} + ' of ' + ${totalLessons}">Lesson 1 of 7</div>
+                            </div>
+                        </div>
+
+                        <!-- Reading progress bar -->
+                        <div style="height:4px;background:#e2e8f0">
+                            <div id="readingProgress"
+                                style="height:4px;background:linear-gradient(90deg,#4338ca,#7c3aed);width:0;transition:width .3s">
+                            </div>
+                        </div>
+
+                        <div class="p-4 p-lg-5">
+                            <!-- Content paragraphs -->
+                            <div class="lesson-body" id="lessonBody">
+                                <th:block th:each="para : ${#strings.arraySplit(lesson.content, '.')}">
+                                    <p th:if="${!#strings.isEmpty(#strings.trim(para))}"
+                                        th:text="${#strings.trim(para)} + '.'">Para</p>
+                                </th:block>
+                            </div>
+
+                            <!-- Key Point highlight -->
+                            <div class="key-point-box mt-4">
+                                <i class="bi bi-lightbulb-fill text-warning me-2"></i>
+                                <strong>Key Takeaway:</strong>
+                                <span th:text="${#strings.abbreviate(lesson.content, 140)}">Takeaway…</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── Quiz Section ──────────────────────────────────── -->
+                    <div class="panel mt-4">
+                        <div class="panel-head">
+                            <div class="panel-title">
+                                <i class="bi bi-patch-question-fill text-indigo me-2"></i>
+                                Knowledge Check — Quiz
+                            </div>
+                            <span class="badge bg-indigo" th:text="${lesson.questions.size()} + ' Questions'">2
+                                Questions</span>
+                        </div>
+                        <div class="p-4" id="quizContainer">
+
+                            <th:block th:each="q, qStat : ${lesson.questions}">
+                                <div class="quiz-question-block mb-4"
+                                    th:attr="data-correct=${q.correctIndex},data-index=${qStat.index}">
+                                    <div class="quiz-q-text mb-3">
+                                        <span class="quiz-num" th:text="${qStat.count} + '.'">1.</span>
+                                        <span th:text="${q.question}">Question text</span>
+                                    </div>
+                                    <div class="quiz-options">
+                                        <th:block th:each="opt, optStat : ${q.options}">
+                                            <button type="button" class="quiz-option-btn"
+                                                th:attr="data-qidx=${qStat.index - 1},data-opt=${optStat.index}"
+                                                th:text="${opt}" onclick="answerQuiz(this)">Option</button>
+                                        </th:block>
+                                    </div>
+                                    <div class="quiz-feedback" id="feedback-0" style="display:none"></div>
+                                </div>
+                            </th:block>
+
+                            <div id="quizResult" class="quiz-result-box" style="display:none">
+                                <i class="bi bi-trophy-fill text-warning me-2" style="font-size:1.5rem"></i>
+                                <span id="quizResultText">Great job!</span>
+                            </div>
+
+                            <button class="btn btn-outline-indigo mt-3" onclick="resetQuiz()">
+                                <i class="bi bi-arrow-clockwise me-1"></i>Reset Quiz
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ── Prev / Next Navigation ────────────────────────── -->
+                    <div class="d-flex justify-content-between mt-4 gap-3">
+                        <a th:if="${prevLesson != null}" th:href="@{/learning/{id}(id=${prevLesson.id})}"
+                            class="btn btn-outline-indigo flex-fill text-start">
+                            <i class="bi bi-arrow-left-circle me-1"></i>
+                            <small class="d-block text-muted" style="font-size:.7rem">PREVIOUS</small>
+                            <span th:text="${prevLesson.title}">Prev Lesson</span>
+                        </a>
+                        <a th:if="${prevLesson == null}" class="btn btn-outline-indigo flex-fill opacity-50 disabled"
+                            disabled>
+                            <i class="bi bi-arrow-left-circle me-1"></i> First Lesson
+                        </a>
+
+                        <a th:if="${nextLesson != null}" th:href="@{/learning/{id}(id=${nextLesson.id})}"
+                            class="btn btn-indigo flex-fill text-end">
+                            <small class="d-block" style="font-size:.7rem;opacity:.8">NEXT</small>
+                            <span th:text="${nextLesson.title}">Next Lesson</span>
+                            <i class="bi bi-arrow-right-circle ms-1"></i>
+                        </a>
+                        <a th:if="${nextLesson == null}" th:href="@{/learning}"
+                            class="btn btn-success flex-fill text-center">
+                            <i class="bi bi-check-circle-fill me-1"></i>Finish Module
+                        </a>
+                    </div>
+                </div>
+
+                <!-- ── Side Panel ──────────────────────────────────────── -->
+                <div class="col-lg-4">
+
+                    <!-- Progress tracker -->
+                    <div class="panel mb-4">
+                        <div class="panel-head">
+                            <div class="panel-title"><i class="bi bi-bar-chart-steps me-2 text-indigo"></i>Your Progress
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <div class="d-flex justify-content-between small text-muted mb-1">
+                                <span>Lesson <span th:text="${lessonNumber}">1</span> of <span
+                                        th:text="${totalLessons}">7</span></span>
+                                <span id="progressPct">0%</span>
+                            </div>
+                            <div class="progress" style="height:10px;border-radius:8px">
+                                <div class="progress-bar" id="moduleProgress" role="progressbar"
+                                    style="background:linear-gradient(90deg,#4338ca,#7c3aed);border-radius:8px"
+                                    th:attr="style='width:' + ${(lessonNumber * 100 / totalLessons)} + '%;background:linear-gradient(90deg,#4338ca,#7c3aed);border-radius:8px'">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category info -->
+                    <div class="panel mb-4">
+                        <div class="panel-head">
+                            <div class="panel-title"><i class="bi bi-tag-fill me-2 text-indigo"></i>Category</div>
+                        </div>
+                        <div class="p-3">
+                            <span class="lesson-tag" th:classappend="'tag-' + ${lesson.category}"
+                                th:text="${lesson.category}">category</span>
+                            <p class="small mt-3 text-muted mb-0">
+                                This lesson is part of the
+                                <strong th:text="${lesson.category}">category</strong> module.
+                                Complete all lessons in this category to master this domain.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Back button -->
+                    <a th:href="@{/learning}" class="btn btn-outline-indigo w-100">
+                        <i class="bi bi-grid-1x2 me-1"></i>Back to All Lessons
+                    </a>
+                </div>
+
+            </div><!-- /row -->
+        </main>
+
+        <!-- FOOTER -->
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
+    </div>
+
+    <!-- SCRIPTS -->
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+
+    <script>
+        // ── Reading progress bar ──────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', function () {
+            const body = document.getElementById('lessonBody');
+            const bar = document.getElementById('readingProgress');
+            if (!body || !bar) return;
+
+            const rect = body.getBoundingClientRect();
+            const docH = document.documentElement.scrollHeight - window.innerHeight;
+
+            window.addEventListener('scroll', function () {
+                const pct = Math.min(100, (window.scrollY / docH) * 100);
+                bar.style.width = pct + '%';
+            });
+
+            // Set module progress %
+            const pctEl = document.getElementById('progressPct');
+            const prog = document.getElementById('moduleProgress');
+            if (pctEl && prog) {
+                const val = parseInt(prog.style.width) || 0;
+                pctEl.textContent = val + '%';
+            }
+        });
+
+        // ── Quiz logic ────────────────────────────────────────────────────────
+        let quizAnswers = {};
+
+        function answerQuiz(btn) {
+            const qBlock = btn.closest('.quiz-question-block');
+            const qIdx = parseInt(qBlock.dataset.index);
+            const correct = parseInt(qBlock.dataset.correct);
+            const chosen = parseInt(btn.dataset.opt);
+            const feedback = qBlock.querySelector('.quiz-feedback');
+
+            // Disable all buttons for this question
+            qBlock.querySelectorAll('.quiz-option-btn').forEach((b, i) => {
+                b.disabled = true;
+                if (i === correct) b.classList.add('correct');
+                else if (i === chosen) b.classList.add('wrong');
+            });
+
+            const isRight = chosen === correct;
+            quizAnswers[qIdx] = isRight;
+            feedback.style.display = 'block';
+            feedback.innerHTML = isRight
+                ? '<i class="bi bi-check-circle-fill text-success me-1"></i><strong>Correct!</strong> Well done.'
+                : '<i class="bi bi-x-circle-fill text-danger me-1"></i><strong>Not quite.</strong> The highlighted option is correct.';
+
+            // Show final result if all answered
+            const total = document.querySelectorAll('.quiz-question-block').length;
+            if (Object.keys(quizAnswers).length === total) showResult(total);
+        }
+
+        function showResult(total) {
+            const score = Object.values(quizAnswers).filter(Boolean).length;
+            const resultBox = document.getElementById('quizResult');
+            const resultText = document.getElementById('quizResultText');
+            resultBox.style.display = 'flex';
+            const pct = Math.round(score / total * 100);
+            resultText.innerHTML = `You scored <strong>${score}/${total}</strong> (${pct}%)${pct === 100 ? ' 🏆 Perfect score!' : pct >= 50 ? ' 👍 Good work!' : ' 📚 Review the lesson and try again.'}`;
+            resultBox.className = 'quiz-result-box ' + (pct === 100 ? 'result-perfect' : pct >= 50 ? 'result-good' : 'result-retry');
+        }
+
+        function resetQuiz() {
+            quizAnswers = {};
+            document.querySelectorAll('.quiz-option-btn').forEach(b => {
+                b.disabled = false;
+                b.classList.remove('correct', 'wrong');
+            });
+            document.querySelectorAll('.quiz-feedback').forEach(f => f.style.display = 'none');
+            const rb = document.getElementById('quizResult');
+            if (rb) { rb.style.display = 'none'; rb.className = 'quiz-result-box'; }
+        }
+    </script>
+
+</body>
+
+</html>

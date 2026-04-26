@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign In – Smart University MMS | Rwanda</title>
+    <meta name="description" content="National University Device &amp; Materials Maintenance System — Rwanda" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at center, #1e1b4b 0%, #06081a 100%);
+            color: #e2e8f0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 40px; /* Margins on all sides */
+        }
+
+        /* ── Centered login container ── */
+        .login-page {
+            width: 100%;
+            max-width: 1100px;
+            height: 100%;
+            max-height: 800px;
+            display: flex;
+            background: rgba(16, 20, 36, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.7), 0 30px 60px -30px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255,255,255,0.05);
+            position: relative;
+        }
+
+        /* ══════════════════════════════════════
+           LEFT HERO PANEL  (the illustrated side)
+           ══════════════════════════════════════ */
+        .hero-panel {
+            width: 53%;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 100%), url('/images/smart_university_background.png') center/cover no-repeat;
+        }
+
+        /* Top header bar inside hero (logo + RW badge) */
+        .hero-topbar {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 28px 40px 0;
+        }
+
+        .hero-logo-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-gem {
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, #7c3aed, #6366f1, #06b6d4);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 6px 24px rgba(99, 102, 241, 0.7), 0 0 0 1px rgba(99, 102, 241, 0.4);
+            flex-shrink: 0;
+            animation: gemPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes gemPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 6px 24px rgba(99, 102, 241, 0.6), 0 0 0 1px rgba(99, 102, 241, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 6px 36px rgba(99, 102, 241, 1.0), 0 0 0 2px rgba(99, 102, 241, 0.6);
+            }
+        }
+
+        .logo-text-block {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.1;
+            display: block;
+        }
+
+        .logo-title span {
+            color: #a78bfa;
+        }
+
+        .logo-sub {
+            font-size: 10px;
+            color: #64748b;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            display: block;
+            margin-top: 2px;
+        }
+
+        .rw-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 9999px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .rw-badge .rw-abbr {
+            font-weight: 700;
+            color: #c7d2fe;
+            font-size: 11px;
+        }
+
+        /* ── SVG Scene illustration ── */
+        .hero-scene {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        /* Floating glow orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            pointer-events: none;
+            animation: orbDrift 10s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 460px;
+            height: 460px;
+            background: rgba(99, 102, 241, 0.18);
+            top: -120px;
+            left: -80px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 340px;
+            height: 340px;
+            background: rgba(124, 58, 237, 0.14);
+            bottom: -80px;
+            right: 80px;
+            animation-delay: -4s;
+        }
+
+        .orb-3 {
+            width: 220px;
+            height: 220px;
+            background: rgba(6, 182, 212, 0.10);
+            top: 45%;
+            left: 58%;
+            animation-delay: -7s;
+        }
+
+        @keyframes orbDrift {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+            }
+
+            50% {
+                transform: translateY(-28px) scale(1.06);
+            }
+        }
+
+        /* Illustrated character figures (CSS art) */
+        .scene-wrapper {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 72%;
+            z-index: 2;
+        }
+
+        /* Floor glow line */
+        .scene-floor {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent 0%, rgba(99, 102, 241, 0.6) 30%, rgba(6, 182, 212, 0.5) 70%, transparent 100%);
+            box-shadow: 0 0 40px rgba(99, 102, 241, 0.5), 0 0 80px rgba(6, 182, 212, 0.3);
+        }
+
+        .scene-floor-glow {
+            position: absolute;
+            bottom: 0;
+            left: 10%;
+            right: 10%;
+            height: 60px;
+            background: linear-gradient(to top, rgba(99, 102, 241, 0.12) 0%, transparent 100%);
+        }
+
+        /* Small floating tech icons in the background */
+        .float-icon {
+            position: absolute;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            animation: floatIcon 6s ease-in-out infinite;
+            z-index: 3;
+        }
+
+        .float-icon.fi1 {
+            top: 18%;
+            left: 12%;
+            background: rgba(99, 102, 241, 0.18);
+            border: 1px solid rgba(99, 102, 241, 0.35);
+            animation-delay: 0s;
+        }
+
+        .float-icon.fi2 {
+            top: 10%;
+            left: 55%;
+            background: rgba(6, 182, 212, 0.12);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            animation-delay: -2s;
+        }
+
+        .float-icon.fi3 {
+            top: 32%;
+            right: 12%;
+            background: rgba(124, 58, 237, 0.15);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            animation-delay: -4s;
+        }
+
+        .float-icon.fi4 {
+            top: 55%;
+            left: 6%;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            animation-delay: -1s;
+        }
+
+        .float-icon.fi5 {
+            top: 26%;
+            left: 34%;
+            background: rgba(245, 158, 11, 0.10);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            animation-delay: -5s;
+            font-size: 14px;
+        }
+
+        @keyframes floatIcon {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-14px) rotate(5deg);
+            }
+        }
+
+        /* Hexagonal data nodes */
+        .hex-node {
+            position: absolute;
+            border-radius: 50%;
+            animation: hexNode 4s ease-in-out infinite;
+        }
+
+        .hex-node.hn1 {
+            width: 8px;
+            height: 8px;
+            background: #6366f1;
+            top: 22%;
+            left: 48%;
+            box-shadow: 0 0 12px #6366f1;
+            animation-delay: 0s;
+        }
+
+        .hex-node.hn2 {
+            width: 6px;
+            height: 6px;
+            background: #06b6d4;
+            top: 42%;
+            left: 20%;
+            box-shadow: 0 0 10px #06b6d4;
+            animation-delay: -1.5s;
+        }
+
+        .hex-node.hn3 {
+            width: 5px;
+            height: 5px;
+            background: #a78bfa;
+            top: 18%;
+            right: 22%;
+            box-shadow: 0 0 8px #a78bfa;
+            animation-delay: -3s;
+        }
+
+        .hex-node.hn4 {
+            width: 7px;
+            height: 7px;
+            background: #10b981;
+            top: 60%;
+            left: 60%;
+            box-shadow: 0 0 10px #10b981;
+            animation-delay: -2s;
+        }
+
+        @keyframes hexNode {
+
+            0%,
+            100% {
+                opacity: 0.6;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.5);
+            }
+        }
+
+        /* The person at desk (SVG based) */
+        .hero-person {
+            position: absolute;
+            bottom: 3px;
+            z-index: 5;
+        }
+
+        .hero-person.p-desk {
+            left: 5%;
+        }
+
+        .hero-person.p-server {
+            left: 36%;
+        }
+
+        .hero-person.p-cleaner {
+            right: 2%;
+        }
+
+        /* ── Main hero text block ── */
+        /* Animated Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #fff 0%, #818cf8 50%, #6366f1 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+        .hero-text {
+            position: relative;
+            z-index: 10;
+            padding: 36px 44px 48px;
+            margin-top: auto;
+        }
+
+        .hero-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 52px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 50%, #818cf8 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-desc {
+            font-size: 14.5px;
+            color: #94a3b8;
+            max-width: 380px;
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+
+        /* Divider line */
+        .hero-panel::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            width: 1px;
+            background: linear-gradient(180deg, transparent 0%, rgba(99, 102, 241, 0.5) 30%, rgba(6, 182, 212, 0.4) 70%, transparent 100%);
+            z-index: 20;
+        }
+
+        /* ══════════════════════════════════════
+           RIGHT: FORM PANEL
+           ══════════════════════════════════════ */
+        .form-panel {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+            background: rgba(8, 11, 28, 0.4);
+            position: relative;
+            overflow: hidden !important;
+            z-index: 10;
+        }
+
+        /* Ambient glows behind the form */
+        .form-panel::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 60%; height: 60%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.07) 0%, transparent 70%);
+            filter: blur(40px); pointer-events: none;
+        }
+        .form-panel::after {
+            content: ''; position: absolute; bottom: 0; right: 0; width: 60%; height: 60%;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.05) 0%, transparent 70%);
+            filter: blur(40px); pointer-events: none;
+        }
+
+        /* Rwanda badge on form panel (top right) */
+        .rw-badge-form {
+            position: absolute;
+            top: 22px;
+            right: 22px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 9999px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 360px;
+            background: rgba(16, 20, 36, 0.7);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 10px 16px;
+            position: relative;
+            z-index: 20;
+            margin: auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-heading {
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .card-heading h2 {
+            font-size: 16px;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .card-heading p {
+            display: none;
+        }
+
+        .input-group {
+            margin-bottom: 4px;
+        }
+
+        .input-label {
+            display: none !important;
+        }
+
+        .input-field {
+            padding: 8px 12px 8px 36px;
+            font-size: 13px;
+            height: 40px;
+        }
+
+        .input-icon {
+            font-size: 14px;
+        }
+
+        .btn-submit {
+            margin: 6px 0 4px;
+            padding: 6px;
+            font-size: 13px;
+            height: 36px;
+        }
+
+        .form-divider {
+            display: none;
+        }
+
+        .demo-grid {
+            display: flex;
+            justify-content: space-around;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
+        .demo-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 60px; /* even narrower */
+        }
+
+        .demo-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .demo-card div:last-child {
+            display: block; /* Show the labels */
+        }
+
+        .dc-icon-wrapper {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(99,102,241,0.2);
+            font-size: 12px;
+        }
+
+        .dc-label {
+            font-size: 7px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.1px;
+            text-align: center;
+        }
+
+        .form-footer {
+            margin-top: 6px;
+            font-size: 10px;
+            text-align: center;
+        }
+
+        .rw-badge-form {
+            display: none !important;
+        }
+
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(22px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .card-heading {
+            margin-bottom: 24px;
+        }
+
+        .card-heading h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .card-heading p {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        /* Alert */
+        .form-alert {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .form-alert.err {
+            background: rgba(244, 63, 94, 0.08);
+            border: 1px solid rgba(244, 63, 94, 0.28);
+            color: #fda4af;
+        }
+
+        .form-alert.ok {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.28);
+            color: #6ee7b7;
+        }
+
+        .form-alert.inf {
+            background: rgba(6, 182, 212, 0.08);
+            border: 1px solid rgba(6, 182, 212, 0.28);
+            color: #67e8f9;
+        }
+
+        /* Inputs */
+        .input-group {
+            margin-bottom: 14px;
+        }
+
+        .input-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-bottom: 8px;
+        }
+
+        .input-label a {
+            color: #818cf8;
+            font-size: 12px;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .input-label a:hover {
+            color: #a5b4fc;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 10px 14px 10px 40px;
+            background: rgba(8, 11, 28, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            color: #f8fafc;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .input-field::placeholder {
+            color: #475569;
+        }
+
+        .input-field:focus {
+            border-color: #818cf8;
+            background: rgba(8, 11, 28, 0.9);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15), inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .input-wrap:focus-within .input-icon {
+            color: #818cf8;
+        }
+
+        .btn-eye {
+            position: absolute;
+            right: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #475569;
+            cursor: pointer;
+            font-size: 15px;
+            transition: color 0.2s;
+        }
+
+        .btn-eye:hover {
+            color: #818cf8;
+        }
+
+        /* Sign In button */
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #6366f1 0%, #7c3aed 50%, #6d28d9 100%);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 24px rgba(99, 102, 241, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            margin-top: 8px;
+            margin-bottom: 20px;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 36px rgba(99, 102, 241, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+            transition: left 0.45s ease;
+        }
+
+        .btn-submit:hover::before {
+            left: 100%;
+        }
+
+        .btn-submit .spinner {
+            display: none;
+            margin-right: 8px;
+        }
+
+        .btn-submit.loading .btn-label {
+            display: none;
+        }
+
+        .btn-submit.loading .spinner {
+            display: inline-block;
+        }
+
+        /* Quick login divider */
+        .form-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 20px 0 16px;
+            font-size: 11.5px;
+            color: #475569;
+        }
+
+        .form-divider::before,
+        .form-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.22), transparent);
+        }
+
+        /* Footer link */
+        .form-footer {
+            text-align: center;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .form-footer a {
+            color: #818cf8;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .form-footer a:hover {
+            color: #a5b4fc;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 900px) {
+            .hero-panel {
+                display: none;
+            }
+
+            .form-panel {
+                padding: 28px 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-page">
+
+        <!-- ════════ LEFT: HERO PANEL ════════ -->
+        <div class="hero-panel">
+
+            <!-- Ambient glow orbs -->
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+            <div class="orb orb-3"></div>
+
+            <!-- Enhanced Visibility Hero Content -->
+            <div class="hero-content-simple" style="position: relative; z-index: 10; padding: 60px; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left;">
+                <div style="max-width: 650px;">
+                    <div style="font-size: 72px; margin-bottom: 32px; filter: drop-shadow(0 0 30px rgba(99, 102, 241, 0.6));">🎓</div>
+                    <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: 64px; font-weight: 900; line-height: 1.0; color: #ffffff; text-transform: uppercase; letter-spacing: -3px; text-shadow: 0 20px 40px rgba(0,0,0,0.8);">
+                        SMART UNIVERSITY<br/>
+                        <span style="color: #a5b4fc;">DEVICES & MATERIALS</span><br/>
+                        MAINTENANCE SYSTEM
+                    </h1>
+                    <div style="width: 140px; height: 8px; background: linear-gradient(90deg, #6366f1, #06b6d4); margin: 40px 0; border-radius: 4px; box-shadow: 0 0 30px rgba(99, 102, 241, 0.5);"></div>
+                    <p style="font-size: 18px; color: #cbd5e1; font-weight: 500; max-width: 480px; line-height: 1.6; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
+                        A sophisticated asset management network dedicated to institutional excellence and operational efficiency.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Background Scene illustrations dynamically rendered in external image now -->
+
+        </div>
+
+        <!-- ════════ RIGHT: FORM PANEL ════════ -->
+        <div class="form-panel">
+            <div class="login-card">
+                <div class="card-heading">
+                    <h2 class="d-flex align-items-center gap-2">Welcome Back 👋</h2>
+                    <p>Sign in to your dashboard · <span class="text-indigo fw-bold">Smart University Devices & Materials Maintenance System</span></p>
+                </div>
+
+                <!-- Error / Success alerts -->
+                <div th:if="${error}" class="form-alert err">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                    <span th:text="${error}"></span>
+                </div>
+                <div th:if="${success}" class="form-alert ok">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span th:text="${success}"></span>
+                </div>
+                <!-- ... -->
+
+                <form th:action="@{/auth/login}" method="post" id="loginForm">
+                    <!-- Email -->
+                    <div class="input-group">
+                        <div class="input-label"><span>Email Address</span></div>
+                        <div class="input-wrap">
+                            <i class="bi bi-envelope input-icon"></i>
+                            <input type="email" name="email" id="emailField" class="input-field"
+                                placeholder="you@university.rw" required autocomplete="email" />
+                        </div>
+                    </div>
+
+                    <!-- Password row -->
+                    <div class="input-group">
+                        <div class="input-label">
+                            <span>Password</span>
+                            <a href="#" class="text-indigo">Forgot password?</a>
+                        </div>
+                        <div class="input-wrap">
+                            <i class="bi bi-lock input-icon"></i>
+                            <input type="password" name="password" id="pwField" class="input-field"
+                                placeholder="Enter password" required />
+                            <button type="button" class="btn-eye" onclick="togglePw()">
+                                <i class="bi bi-eye" id="eyeIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Anti-Robot Captcha (High Level) -->
+                    <div class="input-group">
+                        <div class="input-label mb-1">
+                            <span style="color:#f59e0b;"><i class="bi bi-shield-lock-fill me-1"></i> Security Verification</span>
+                        </div>
+                        
+                        <div class="d-flex flex-row align-items-center gap-2">
+                            <!-- The Captcha Image (Inline) -->
+                            <div style="background: rgba(12, 17, 40, 0.9); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 8px; padding: 2px; text-align: center; height: 36px;">
+                                <img th:src="${captchaImage}" alt="Security Captcha" style="border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); width: 100px; height: 30px;" />
+                            </div>
+                            
+                            <!-- The User Answer Input (Inline) -->
+                            <div class="input-wrap flex-grow-1">
+                                <i class="bi bi-upc-scan input-icon" style="color:#f59e0b; font-size: 13px;"></i>
+                                <input type="text" name="captchaAnswer" id="captchaField" class="input-field"
+                                    placeholder="Type code above (Not a robot)" style="border-color: rgba(245, 158, 11, 0.3); font-family: monospace; letter-spacing: 0.5px; padding: 6px 12px 6px 32px; height: 36px; font-size: 12px;" required autocomplete="off" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <span class="spinner-border spinner-border-sm me-2" style="display:none"></span>
+                        <span><i class="bi bi-box-arrow-in-right me-2"></i>Sign In to Dashboard</span>
+                    </button>
+                </form>
+
+                <p class="form-footer">
+                    Don't have an account? <a th:href="@{/register}">Create account</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePw() {
+            const f = document.getElementById('pwField');
+            const i = document.getElementById('eyeIcon');
+            f.type = f.type === 'password' ? 'text' : 'password';
+            i.className = f.type === 'password' ? 'bi bi-eye' : 'bi bi-eye-slash';
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function () {
+            const btn = document.getElementById('submitBtn');
+            btn.classList.add('loading');
+            btn.disabled = true;
+        });
+    </script>
+</body>
+
+</html>

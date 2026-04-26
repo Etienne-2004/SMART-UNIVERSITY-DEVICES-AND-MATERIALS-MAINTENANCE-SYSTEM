@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head('Maintenance Tasks')}"></head>
+
+<body class="app-body">
+
+    <!-- SIDEBAR -->
+    <aside th:replace="~{fragments/layout :: sidebar('maintenance')}"></aside>
+
+    <!-- MAIN -->
+    <div class="main-content" id="mainContent">
+        <!-- NAVBAR -->
+        <nav th:replace="~{fragments/layout :: navbar('Maintenance Operations')}"></nav>
+
+        <main class="page-content">
+            <h2 class="mb-4 d-flex align-items-center"><i class="bi bi-tools text-indigo me-2"></i> Maintenance Tasks
+            </h2>
+
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show mb-4">
+                <i class="bi bi-check-circle-fill me-2"></i><span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Bulk Assignment Controls -->
+            <div class="panel mb-4 overflow-hidden border-0 shadow-lg" style="background: rgba(13, 23, 66, 0.4); border: 1px solid var(--border-subtle) !important;">
+                <div class="panel-head bg-glass py-3">
+                    <div class="panel-title d-flex align-items-center gap-2">
+                        <i class="bi bi-stack text-indigo"></i> Bulk Task Dispatch
+                    </div>
+                </div>
+                <div class="panel-body p-4">
+                    <form th:action="@{/admin/maintenance/bulk-assign}" method="post" id="bulkAssignForm">
+                        <div class="row g-4 align-items-end">
+                            <div class="col-lg-5 col-md-6">
+                                <label class="form-label d-flex align-items-center gap-2">
+                                    <i class="bi bi-person-workspace text-indigo"></i> Target Technician
+                                </label>
+                                <select name="technicianId" class="form-select bg-glass border-0" required>
+                                    <option value="">-- Choose Master Technician --</option>
+                                    <option th:each="t: ${technicians}" th:value="${t.id}" th:text="${t.fullName}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4 col-md-6">
+                                <label class="form-label d-flex align-items-center gap-2">
+                                    <i class="bi bi-calendar-check text-indigo"></i> Global Deadline
+                                </label>
+                                <input type="datetime-local" name="dueDate" class="form-control bg-glass border-0" />
+                            </div>
+                            <div class="col-lg-3 col-12">
+                                <button type="submit" class="btn btn-indigo w-100 py-3 rounded-pill shadow-lg">
+                                    <i class="bi bi-lightning-charge-fill me-2"></i> Deploy All Pending
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Debug Information -->
+            <div class="alert alert-info mb-3">
+                <small>
+                    <strong>Debug Info:</strong> 
+                    Requests: <span th:text="${#lists.size(requests)}">0</span> | 
+                    Technicians: <span th:text="${#lists.size(technicians)}">0</span>
+                </small>
+            </div>
+
+            <!-- Task Assignment Grid/Table -->
+            <div class="panel">
+                <div class="panel-head">
+                    <div class="panel-title">All Maintenance Requests</div>
+                    <div class="panel-subtitle" th:text="'Total: ' + ${#lists.size(requests)} + ' requests'">0 requests</div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Assigned To</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="req : ${requests}">
+                                <td th:text="${req.id}">1</td>
+                                <td th:text="${req.requestType}">DEVICE</td>
+                                <td th:text="${#strings.abbreviate(req.issueDescription, 50)}">Issue description</td>
+                                <td th:text="${req.priority}">HIGH</td>
+                                <td>
+                                    <span class="badge"
+                                          th:classappend="${req.status.name() == 'PENDING' ? 'bg-warning' :
+                                                     req.status.name() == 'IN_PROGRESS' ? 'bg-info' :
+                                                     req.status.name() == 'COMPLETED' ? 'bg-success' : 'bg-secondary'}"
+                                          th:text="${#strings.replace(req.status.name(), '_', ' ')}">PENDING</span>
+                                </td>
+                                <td th:text="${req.assignedTechnician?.fullName ?: 'Not assigned'}">Technician</td>
+                                <td>
+                                    <div class="d-flex gap-1">
+                                        <th:block th:if="${req.status.name() == 'PENDING'}">
+                                            <button type="button" class="btn btn-sm btn-outline-success"
+                                                    th:data-bs-target="'#assignModal' + ${req.id}"
+                                                    data-bs-toggle="modal"
+                                                    title="Assign Task">
+                                                <i class="bi bi-person-plus"></i> Assign
+                                            </button>
+                                        </th:block>
+                                        <th:block th:if="${req.status.name() == 'COMPLETED'}">
+                                            <form th:action="@{'/admin/maintenance/' + ${req.id} + '/verify'}" method="post" style="display:inline;">
+                                                <button type="submit" class="btn btn-sm btn-outline-warning">
+                                                    <i class="bi bi-check-circle"></i> Verify
+                                                </button>
+                                            </form>
+                                        </th:block>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(requests)}">
+                                <td colspan="7" class="text-center text-muted">No maintenance requests found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Modals for assignment -->
+            <div th:each="r: ${requests}" th:if="${r.status.name() == 'PENDING'}" class="modal fade"
+                th:id="'assignModal' + ${r.id}" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0 overflow-hidden">
+                        <form th:action="@{'/admin/maintenance/' + ${r.id} + '/assign'}" method="post">
+                            <div class="modal-header bg-glass py-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-indigo bg-opacity-10 p-3 rounded-circle me-3">
+                                        <i class="bi bi-person-gear text-indigo fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="modal-title mb-0">Task Assignment #<span th:text="${r.id}"></span></h5>
+                                        <p class="small text-muted mb-0">Dispatching to technician queue</p>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body p-4">
+                                <div class="mb-4">
+                                    <label class="form-label d-flex align-items-center gap-2">
+                                        <i class="bi bi-info-circle text-indigo"></i> Issue Summary
+                                    </label>
+                                    <textarea class="form-control bg-glass border-0" rows="3" readonly th:text="${r.issueDescription}" style="resize: none;"></textarea>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label d-flex align-items-center gap-2">
+                                            <i class="bi bi-person-check text-indigo"></i> Assign Technician
+                                        </label>
+                                        <select name="technicianId" class="form-select" required>
+                                            <option value="">-- Select Active Technician --</option>
+                                            <option th:each="t: ${technicians}" th:value="${t.id}" th:text="${t.fullName}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label d-flex align-items-center gap-2">
+                                            <i class="bi bi-calendar-event text-indigo"></i> Target Due Date
+                                        </label>
+                                        <input type="datetime-local" name="dueDate" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer bg-glass py-3">
+                                <button type="button" class="btn btn-link text-secondary text-decoration-none px-4"
+                                    data-bs-dismiss="modal">Discard</button>
+                                <button type="submit" class="btn btn-indigo px-5 rounded-pill shadow-lg">
+                                    <i class="bi bi-send-check-fill me-2"></i> Confirm Dispatch
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- FOOTER -->
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
+    </div>
+
+    <!-- SCRIPTS -->
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+
+</html>

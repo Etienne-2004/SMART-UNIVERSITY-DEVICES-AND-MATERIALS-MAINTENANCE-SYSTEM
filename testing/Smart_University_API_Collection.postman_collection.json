@@ -1,0 +1,316 @@
+{
+	"info": {
+		"_postman_id": "smart-university-api-collection",
+		"name": "Smart University MMS - API Collection",
+		"description": "Complete API testing collection for Smart University Devices and Materials Maintenance System",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "smart-university-testing"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "admin@smartuni.rw",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Admin@2024",
+									"type": "text"
+								},
+								{
+									"key": "captchaAnswer",
+									"value": "BYPASS",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8083/login",
+							"host": ["http://localhost:8083"],
+							"path": ["login"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8083/simple-logout",
+							"host": ["http://localhost:8083"],
+							"path": ["simple-logout"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin Dashboard",
+			"item": [
+				{
+					"name": "Get Admin Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "JWT_TOKEN={{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8083/admin/dashboard",
+							"host": ["http://localhost:8083"],
+							"path": ["admin", "dashboard"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users List",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "JWT_TOKEN={{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8083/api/admin/users",
+							"host": ["http://localhost:8083"],
+							"path": ["api", "admin", "users"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Technician Dashboard",
+			"item": [
+				{
+					"name": "Get Technician Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "JWT_TOKEN={{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8083/technician/dashboard",
+							"host": ["http://localhost:8083"],
+							"path": ["technician", "dashboard"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Assigned Tasks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "JWT_TOKEN={{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8083/technician/tasks",
+							"host": ["http://localhost:8083"],
+							"path": ["technician", "tasks"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Staff Dashboard",
+			"item": [
+				{
+					"name": "Get Staff Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "JWT_TOKEN={{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8083/staff/dashboard",
+							"host": ["http://localhost:8083"],
+							"path": ["staff", "dashboard"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Report Device",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Cookie",
+								"value": "JWT_TOKEN={{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"deviceName\": \"Test Device\",\n  \"roomLocation\": \"Test Room\",\n  \"description\": \"Test Description\",\n  \"deviceType\": \"COMPUTER\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8083/staff/devices/add",
+							"host": ["http://localhost:8083"],
+							"path": ["staff", "devices", "add"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cleaner Dashboard",
+			"item": [
+				{
+					"name": "Get Cleaner Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "JWT_TOKEN={{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8083/cleaner/dashboard",
+							"host": ["http://localhost:8083"],
+							"path": ["cleaner", "dashboard"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Report Maintenance Issue",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Cookie",
+								"value": "JWT_TOKEN={{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Maintenance Request\",\n  \"description\": \"Test maintenance issue\",\n  \"priority\": \"HIGH\",\n  \"deviceName\": \"Test Device\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8083/cleaner/report-issue",
+							"host": ["http://localhost:8083"],
+							"path": ["cleaner", "report-issue"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "System Health & Monitoring",
+			"item": [
+				{
+					"name": "System Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8083/actuator/health",
+							"host": ["http://localhost:8083"],
+							"path": ["actuator", "health"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Database Test",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8083/db-test",
+							"host": ["http://localhost:8083"],
+							"path": ["db-test"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authentication Test",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8083/auth-test",
+							"host": ["http://localhost:8083"],
+							"path": ["auth-test"]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Auto-extract JWT token from response if present",
+					"if (pm.response.headers.get('Set-Cookie')) {",
+					"    var cookies = pm.response.headers.get('Set-Cookie');",
+					"    var jwtMatch = cookies.match(/JWT_TOKEN=([^;]+)/);",
+					"    if (jwtMatch) {",
+					"        pm.collectionVariables.set('jwt_token', jwtMatch[1]);",
+					"    }",
+					"}"
+				]
+			}
+		}
+	]
+}

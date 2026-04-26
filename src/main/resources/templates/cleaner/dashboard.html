@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head('Cleaner Dashboard')}"></head>
+
+<body class="app-body">
+
+    <!-- SIDEBAR -->
+    <aside th:replace="~{fragments/layout :: sidebar('dashboard')}"></aside>
+
+    <!-- MAIN -->
+    <div class="main-content" id="mainContent">
+        <!-- NAVBAR -->
+        <nav th:replace="~{fragments/layout :: navbar('Cleaner Dashboard')}"></nav>
+
+        <main class="page-content">
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show mb-4">
+                <i class="bi bi-check-circle-fill me-2"></i><span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Enhanced Welcome Banner with Campus Context -->
+            <div class="nation-banner text-amber">
+                <span class="nation-banner-icon">🧹</span>
+                <div>
+                    <div class="nation-banner-title" th:text="'Hello, ' + ${currentUser?.fullName ?: 'Campus Helper'} + '!'">
+                        Hello!</div>
+                    <div class="nation-banner-sub" th:text="${currentUser?.university?.name ?: 'Rwanda National University'} + ' · ' + ${currentUser?.college?.name ?: 'Your Campus'} + ' Maintenance Portal'">
+                        Campus Maintenance Portal · Help keep our campus clean and functional</div>
+                </div>
+                <div class="ms-auto d-flex gap-2">
+                    <a th:href="@{/cleaner/report}" class="btn btn-sm btn-danger shadow-sm">
+                        <i class="bi bi-exclamation-triangle-fill"></i> Report Damage
+                    </a>
+                    <a th:href="@{/learning}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-mortarboard-fill"></i> Training
+                    </a>
+                </div>
+            </div>
+
+            <!-- Enhanced KPI Grid with Campus Impact and Progress -->
+            <div class="kpi-grid mb-4">
+                <div class="kpi-card c-amber">
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrap"><i class="bi bi-exclamation-circle-fill" style="color:#fbbf24"></i>
+                        </div>
+                        <div class="kpi-trend-badge up"><i class="bi bi-arrow-up-right"></i> Active</div>
+                    </div>
+                    <div class="kpi-value count-up" th:text="${myReports.size()}">0</div>
+                    <div class="kpi-label">My Reports</div>
+                    <div class="kpi-sublabel">Issues I've reported this month</div>
+                    <div class="kpi-progress">
+                        <div class="progress" style="height:4px">
+                            <div class="progress-bar bg-amber" th:style="'width:' + ${myReports.size() > 0 ? (myReports.size() * 25) + '%' : '0%'}"></div>
+                        </div>
+                        <small class="text-muted" th:text="${myReports.size()} + ' reports'">0 reports</small>
+                    </div>
+                </div>
+                <div class="kpi-card c-cyan">
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrap"><i class="bi bi-tools" style="color:#22d3ee"></i></div>
+                        <span class="badge bg-info">In Progress</span>
+                    </div>
+                    <div class="kpi-value count-up" th:text="${inProgressCount}">0</div>
+                    <div class="kpi-label">Being Fixed</div>
+                    <div class="kpi-sublabel">Technicians working on my reports</div>
+                    <div class="kpi-progress">
+                        <div class="progress" style="height:4px">
+                            <div class="progress-bar bg-cyan" th:style="'width:' + ${inProgressCount > 0 ? (inProgressCount * 30) + '%' : '0%'}"></div>
+                        </div>
+                        <small class="text-muted" th:text="${inProgressCount} + ' in progress'">0 in progress</small>
+                    </div>
+                </div>
+                <div class="kpi-card c-emerald">
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrap"><i class="bi bi-check-circle-fill" style="color:#34d399"></i></div>
+                        <span class="badge bg-success">Fixed</span>
+                    </div>
+                    <div class="kpi-value count-up" th:text="${completedCount}">0</div>
+                    <div class="kpi-label">Resolved</div>
+                    <div class="kpi-sublabel">Successfully fixed issues</div>
+                    <div class="kpi-progress">
+                        <div class="progress" style="height:4px">
+                            <div class="progress-bar bg-emerald" th:style="'width:' + ${completedCount > 0 ? (completedCount * 35) + '%' : '0%'}"></div>
+                        </div>
+                        <small class="text-muted" th:text="${completedCount} + ' resolved'">0 resolved</small>
+                    </div>
+                </div>
+                <div class="kpi-card c-indigo">
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrap"><i class="bi bi-award-fill" style="color:#818cf8"></i></div>
+                        <div class="kpi-trend-badge up"><i class="bi bi-star-fill"></i> Impact</div>
+                    </div>
+                    <div class="kpi-value count-up" th:text="${campusImpactScore ?: '95'}">95</div>
+                    <div class="kpi-label">Campus Impact</div>
+                    <div class="kpi-sublabel">My contribution to campus quality</div>
+                    <div class="kpi-progress">
+                        <div class="progress" style="height:4px">
+                            <div class="progress-bar bg-indigo" style="width:95%"></div>
+                        </div>
+                        <small class="text-muted">Top 10% contributor</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Campus Status Overview -->
+            <div class="alert-row mb-4">
+                <div class="alert-strip a-emerald">
+                    <i class="bi bi-building"></i>
+                    <strong>Campus Status</strong>
+                    <span th:text="${currentUser?.university?.name ?: 'Your Campus'} + ' is operating normally'">Campus operating normally</span>
+                    <a href="#" class="al-btn">View Map</a>
+                </div>
+                <div class="alert-strip a-amber">
+                    <i class="bi bi-clock-history"></i>
+                    <strong>Response Time</strong>
+                    <span>Average: 2.3 hours</span>
+                    <a href="#" class="al-btn">Details</a>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Enhanced My Reports History -->
+                <div class="col-lg-8">
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div class="panel-title">My Campus Reports</div>
+                            <div class="panel-actions">
+                                <a th:href="@{/cleaner/report}" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-plus-lg"></i> New Report
+                                </a>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>#ID</th>
+                                        <th>Issue Type</th>
+                                        <th>Location</th>
+                                        <th>Reported</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="r: ${myReports}">
+                                        <td>
+                                            <span class="badge bg-secondary" th:text="'#' + ${r.id}">#123</span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <i class="bi bi-box-fill text-amber" th:if="${r.requestType?.name() == 'MATERIAL'}"></i>
+                                                <i class="bi bi-laptop-fill text-indigo" th:if="${r.requestType?.name() == 'DEVICE'}"></i>
+                                                <span th:text="${r.materialName ?: r.deviceName ?: 'Unknown'}">Item</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <i class="bi bi-geo-alt-fill text-muted"></i>
+                                                <span th:text="${r.roomLocation ?: 'Not specified'}">Room 101</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="small">
+                                                <div th:text="${#temporals.format(r.createdAt, 'dd MMM yyyy')}">Date</div>
+                                                <div class="text-muted" th:text="${#temporals.format(r.createdAt, 'HH:mm')}">Time</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge"
+                                                th:classappend="${r.status.name() == 'COMPLETED' ? 'bg-success' : (r.status.name() == 'IN_PROGRESS' ? 'bg-info' : 'bg-warning')}"
+                                                th:text="${r.status}">STATUS</span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <a th:href="@{'/cleaner/reports/' + ${r.id}}" class="btn btn-outline-primary">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <button th:if="${r.status.name() == 'COMPLETED'}" 
+                                                        class="btn btn-outline-success" 
+                                                        title="Mark as helpful">
+                                                    <i class="bi bi-hand-thumbs-up"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(myReports)}">
+                                        <td colspan="6" class="text-center p-4">
+                                            <div class="text-muted">
+                                                <i class="bi bi-clipboard-x display-4 d-block mb-2"></i>
+                                                <strong>No reports yet</strong><br>
+                                                <small>Start by reporting your first campus issue</small>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enhanced Campus Helper Guide -->
+                <div class="col-lg-4">
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div class="panel-title">Campus Helper Guide</div>
+                        </div>
+                        <div class="p-4">
+                            <!-- Quick Stats -->
+                            <div class="alert-row mb-4">
+                                <div class="alert-strip a-emerald">
+                                    <i class="bi bi-trophy-fill"></i>
+                                    <strong>Top Contributor</strong>
+                                    <span>You're in the top 10% this month!</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Process Steps -->
+                            <h6 class="text-secondary mb-3">How to Help Campus</h6>
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-3 d-flex gap-3">
+                                    <div class="rounded-circle bg-amber text-dark d-flex align-items-center justify-content-center"
+                                        style="width:24px;height:24px;flex-shrink:0">1</div>
+                                    <div class="small">
+                                        <strong>Spot Issues Early</strong><br>
+                                        Report damage as soon as you see it
+                                    </div>
+                                </li>
+                                <li class="mb-3 d-flex gap-3">
+                                    <div class="rounded-circle bg-amber text-dark d-flex align-items-center justify-content-center"
+                                        style="width:24px;height:24px;flex-shrink:0">2</div>
+                                    <div class="small">
+                                        <strong>Be Specific</strong><br>
+                                        Include exact location and description
+                                    </div>
+                                </li>
+                                <li class="mb-3 d-flex gap-3">
+                                    <div class="rounded-circle bg-amber text-dark d-flex align-items-center justify-content-center"
+                                        style="width:24px;height:24px;flex-shrink:0">3</div>
+                                    <div class="small">
+                                        <strong>Track Progress</strong><br>
+                                        Monitor your reports and provide feedback
+                                    </div>
+                                </li>
+                                <li class="d-flex gap-3">
+                                    <div class="rounded-circle bg-amber text-dark d-flex align-items-center justify-content-center"
+                                        style="width:24px;height:24px;flex-shrink:0">4</div>
+                                    <div class="small">
+                                        <strong>Learn & Improve</strong><br>
+                                        Use training resources to help better
+                                    </div>
+                                </li>
+                            </ul>
+                            
+                            <!-- Quick Actions -->
+                            <div class="d-grid gap-2">
+                                <a th:href="@{/cleaner/report}" class="btn btn-amber btn-sm">
+                                    <i class="bi bi-plus-circle-fill me-2"></i>Report New Issue
+                                </a>
+                                <a th:href="@{/learning}" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-mortarboard-fill me-2"></i>View Training
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Campus Tips -->
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div class="panel-title">Campus Tips</div>
+                        </div>
+                        <div class="p-3">
+                            <div class="small text-muted">
+                                <div class="d-flex align-items-start gap-2 mb-2">
+                                    <i class="bi bi-lightbulb-fill text-amber mt-1"></i>
+                                    <div><strong>Best Time:</strong> Report issues during morning hours for fastest response</div>
+                                </div>
+                                <div class="d-flex align-items-start gap-2 mb-2">
+                                    <i class="bi bi-camera-fill text-cyan mt-1"></i>
+                                    <div><strong>Photos Help:</strong> Take pictures if possible for better understanding</div>
+                                </div>
+                                <div class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-shield-check-fill text-emerald mt-1"></i>
+                                    <div><strong>Safety First:</strong> Report dangerous items immediately</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Smart Quick Actions - Match Navigation -->
+            <div class="panel mb-4">
+                <div class="panel-head">
+                    <div class="panel-title"><i class="bi bi-lightning-charge-fill me-2" style="color:#fbbf24"></i>Smart
+                        Actions</div>
+                </div>
+                <div class="qaction-grid">
+                    <!-- Dynamic quick actions based on navigation items -->
+                    <th:block th:each="navItem : ${navigationItems}">
+                        <a th:href="${navItem.url}" class="qaction-item" th:title="${navItem.description}">
+                            <div class="qa-icon">
+                                <i th:class="'bi ' + ${navItem.icon}"></i>
+                                <span class="qa-badge" 
+                                      th:if="${navItem.badge != null}" 
+                                      th:text="${navItem.badge}">0</span>
+                            </div>
+                            <span th:text="${navItem.name}">Action</span>
+                        </a>
+                    </th:block>
+                </div>
+            </div>
+        </main>
+
+        <!-- FOOTER -->
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
+    </div>
+
+    <!-- SCRIPTS -->
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+
+</html>

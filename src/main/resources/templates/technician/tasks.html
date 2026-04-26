@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head('My Assigned Tasks')}"></head>
+
+<body class="app-body">
+
+    <!-- SIDEBAR -->
+    <aside th:replace="~{fragments/layout :: sidebar('tasks')}"></aside>
+
+    <!-- MAIN -->
+    <div class="main-content" id="mainContent">
+        <!-- NAVBAR -->
+        <nav th:replace="~{fragments/layout :: navbar('Assigned Tasks Queue')}"></nav>
+
+        <main class="page-content">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h2 class="mb-0 fw-800"><i class="bi bi-list-task me-2 text-indigo"></i> My Tasks</h2>
+                <a th:href="@{/technician/dashboard}" class="btn btn-sm btn-outline-secondary px-3">
+                    <i class="bi bi-speedometer2 me-1"></i> Dashboard
+                </a>
+            </div>
+
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show mb-4">
+                <i class="bi bi-check-circle-fill me-2"></i><span th:text="${success}"></span>
+                <button class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div class="panel">
+                <div class="panel-head">
+                    <div class="panel-title">Task List</div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Category</th>
+                                <th>Issue Detail</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Due Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="task: ${tasks}">
+                                <td th:text="'#' + ${task.id}" class="fw-700"></td>
+                                <td><span class="badge bg-glass border border-subtle text-indigo"
+                                        th:text="${task.requestType}"></span></td>
+                                <td th:text="${#strings.abbreviate(task.issueDescription, 40)}"></td>
+                                <td>
+                                    <span class="badge"
+                                        th:classappend="${task.priority?.name() == 'HIGH' ? 'bg-danger' : (task.priority?.name() == 'MEDIUM' ? 'bg-warning' : 'bg-info')}"
+                                        th:text="${task.priority}"></span>
+                                </td>
+                                <td><span class="badge bg-secondary" th:text="${task.status}"></span></td>
+                                <td th:text="${task.dueDate != null ? #temporals.format(task.dueDate,'dd MMM yyyy') : '—'}"
+                                    th:classappend="${task.dueDate != null and task.dueDate.isBefore(T(java.time.LocalDateTime).now()) ? 'text-danger fw-bold' : ''}">
+                                </td>
+                                <td>
+                                    <form th:if="${task.status.name() == 'ASSIGNED'}"
+                                        th:action="@{'/technician/tasks/' + ${task.id} + '/start'}" method="post"
+                                        style="display:inline">
+                                        <button class="btn btn-sm btn-primary">Start</button>
+                                    </form>
+                                    <button th:if="${task.status.name() == 'IN_PROGRESS'}"
+                                        class="btn btn-sm btn-success" data-bs-toggle="modal"
+                                        data-bs-target="#completeModal" th:data-task-id="${task.id}">
+                                        Done
+                                    </button>
+                                    <a th:href="@{'/technician/tasks/' + ${task.id}}"
+                                        class="btn btn-sm btn-outline-info">View</a>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(tasks)}">
+                                <td colspan="7" class="text-center p-5 text-muted">No assigned tasks found.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <!-- FOOTER -->
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
+    </div>
+
+    <!-- Complete Modal -->
+    <div class="modal fade" id="completeModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form method="post" id="completeForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Complete Task</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Completion Notes</label>
+                            <textarea name="notes" class="form-control" rows="4" required
+                                placeholder="Describe what you fixed..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Mark Completed</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+    <script>
+        document.getElementById('completeModal')?.addEventListener('show.bs.modal', function (e) {
+            document.getElementById('completeForm').action = '/technician/tasks/' + e.relatedTarget.dataset.taskId + '/complete';
+        });
+    </script>
+</body>
+
+</html>

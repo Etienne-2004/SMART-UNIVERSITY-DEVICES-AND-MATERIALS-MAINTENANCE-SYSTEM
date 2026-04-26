@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head('Learning Centre')}"></head>
+
+<body class="app-body">
+
+    <!-- SIDEBAR -->
+    <aside th:replace="~{fragments/layout :: sidebar('learning')}"></aside>
+
+    <!-- MAIN -->
+    <div class="main-content" id="mainContent">
+        <!-- NAVBAR -->
+        <nav th:replace="~{fragments/layout :: navbar('Learning Centre')}"></nav>
+
+        <main class="page-content">
+
+            <!-- ── Hero Banner ─────────────────────────────────────────── -->
+            <div class="nation-banner text-indigo"
+                style="background:linear-gradient(135deg,#312e81 0%,#4338ca 50%,#7c3aed 100%);border:none;">
+                <span class="nation-banner-icon">🎓</span>
+                <div>
+                    <div class="nation-banner-title">Smart Learning Centre</div>
+                    <div class="nation-banner-sub"
+                        th:text="'Personalised for ' + ${roleName} + ' · Expand your system knowledge'">
+                        Smart knowledge for every role
+                    </div>
+                </div>
+                <div class="ms-auto d-flex align-items-center gap-3">
+                    <input id="lessonSearch" type="text" class="form-control form-control-sm"
+                        placeholder="🔍 Search lessons…"
+                        style="width:210px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff"
+                        oninput="filterLessons(this.value)">
+                </div>
+            </div>
+
+            <!-- ── KPI Cards ───────────────────────────────────────────── -->
+            <div class="kpi-grid mb-4">
+                <div class="kpi-card c-indigo">
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrap"><i class="bi bi-journal-richtext" style="color:#818cf8"></i></div>
+                    </div>
+                    <div class="kpi-value count-up" th:text="${totalLessons}">0</div>
+                    <div class="kpi-label">Lessons Available</div>
+                    <div class="kpi-sublabel">Tailored to your role</div>
+                </div>
+                <div class="kpi-card c-cyan">
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrap"><i class="bi bi-patch-question-fill" style="color:#22d3ee"></i></div>
+                    </div>
+                    <div class="kpi-value count-up" th:text="${totalQuizzes}">0</div>
+                    <div class="kpi-label">Quiz Questions</div>
+                    <div class="kpi-sublabel">Test your knowledge</div>
+                </div>
+                <div class="kpi-card c-green">
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrap"><i class="bi bi-check-circle-fill" style="color:#4ade80"></i></div>
+                    </div>
+                    <div class="kpi-value count-up" th:text="${completedCount}">0</div>
+                    <div class="kpi-label">Tasks Completed</div>
+                    <div class="kpi-sublabel">System-wide resolved tasks</div>
+                </div>
+            </div>
+
+            <!-- ── Lesson Cards Grid ───────────────────────────────────── -->
+            <div class="row g-4" id="lessonGrid">
+
+                <th:block th:each="lesson, stat : ${lessons}">
+                    <div class="col-md-6 col-xl-4 lesson-card-wrap"
+                        th:attr="data-title=${lesson.title},data-category=${lesson.category}">
+                        <a th:href="@{/learning/{id}(id=${lesson.id})}"
+                            class="lesson-card text-decoration-none d-block h-100">
+                            <div class="lesson-card-inner">
+
+                                <!-- Category tag + number -->
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="lesson-tag" th:classappend="'tag-' + ${lesson.category}"
+                                        th:text="${lesson.category}">category</span>
+                                    <span class="lesson-num" th:text="'#' + ${stat.count}">01</span>
+                                </div>
+
+                                <h5 class="lesson-title" th:text="${lesson.title}">Lesson Title</h5>
+
+                                <p class="lesson-excerpt" th:text="${#strings.abbreviate(lesson.content, 120)}">
+                                    Description…
+                                </p>
+
+                                <div class="lesson-footer">
+                                    <span class="quiz-badge">
+                                        <i class="bi bi-question-circle-fill me-1"></i>
+                                        <span th:text="${lesson.questions.size()} + ' quiz questions'">2 quiz
+                                            questions</span>
+                                    </span>
+                                    <span class="start-link">
+                                        Start <i class="bi bi-arrow-right-circle-fill ms-1"></i>
+                                    </span>
+                                </div>
+
+                            </div>
+                        </a>
+                    </div>
+                </th:block>
+
+                <!-- Empty state -->
+                <div class="col-12 text-center py-5" id="noResults" style="display:none!important">
+                    <i class="bi bi-search" style="font-size:3rem;opacity:.3"></i>
+                    <div class="mt-3 text-muted">No lessons match your search.</div>
+                </div>
+
+            </div><!-- /lessonGrid -->
+
+            <!-- ── Quick Tips Panel ────────────────────────────────────── -->
+            <div class="panel mt-4">
+                <div class="panel-head">
+                    <div class="panel-title"><i class="bi bi-lightbulb-fill text-warning me-2"></i>Quick Tips for You
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="row g-3" id="quickTips">
+                        <div class="col-md-4">
+                            <div class="tip-card">
+                                <div class="tip-icon">🌡️</div>
+                                <div class="tip-text"><strong>Device Temperature</strong><br>Keep rooms between
+                                    18°C–22°C to maximise device lifespan.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="tip-card">
+                                <div class="tip-icon">📋</div>
+                                <div class="tip-text"><strong>Clear Reports</strong><br>Always state the device ID,
+                                    exact room, and full symptom — not just "broken".</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="tip-card">
+                                <div class="tip-icon">🔐</div>
+                                <div class="tip-text"><strong>Security First</strong><br>Never share your login. MFA
+                                    keeps the entire system safe from unauthorised access.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="tip-card">
+                                <div class="tip-icon">📦</div>
+                                <div class="tip-text"><strong>Proactive Stocking</strong><br>Report low material stock
+                                    before it's depleted — avoid emergency shortages.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="tip-card">
+                                <div class="tip-icon">⚡</div>
+                                <div class="tip-text"><strong>Priority Honesty</strong><br>Use CRITICAL priority only
+                                    for genuine emergencies — it keeps the queue fair.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="tip-card">
+                                <div class="tip-icon">📊</div>
+                                <div class="tip-text"><strong>Track Progress</strong><br>Regularly check your dashboard
+                                    KPIs to spot trends before problems escalate.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
+    </div>
+
+    <!-- SCRIPTS -->
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+
+    <script>
+        function filterLessons(query) {
+            query = query.toLowerCase().trim();
+            let shown = 0;
+            document.querySelectorAll('.lesson-card-wrap').forEach(card => {
+                const title = (card.dataset.title || '').toLowerCase();
+                const category = (card.dataset.category || '').toLowerCase();
+                const visible = !query || title.includes(query) || category.includes(query);
+                card.style.display = visible ? '' : 'none';
+                if (visible) shown++;
+            });
+            const noRes = document.getElementById('noResults');
+            noRes.style.display = shown === 0 ? 'block' : 'none';
+        }
+    </script>
+
+</body>
+
+</html>

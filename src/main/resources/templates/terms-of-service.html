@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Terms of Service')}"></head>
+<body class="app-body">
+    <aside th:replace="~{fragments/layout :: sidebar('none')}"></aside>
+    <div class="main-content">
+        <nav th:replace="~{fragments/layout :: navbar('Terms of Service')}"></nav>
+        <main class="page-content">
+            <div class="panel p-5">
+                <h2 class="mb-4 font-sg text-violet border-bottom pb-2">Terms of Service</h2>
+                <p class="text-secondary fw-500 mb-4">Effective Date: March 14, 2026</p>
+                
+                <section class="mb-5">
+                    <h5 class="text-white mb-3">1. Acceptance of Terms</h5>
+                    <p class="text-secondary">By accessing or using the Smart University Devices and Materials Maintenance System, you agree to be bound by these Terms of Service and all applicable laws and regulations in Rwanda.</p>
+                </section>
+
+                <section class="mb-5">
+                    <h5 class="text-white mb-3">2. User Conduct</h5>
+                    <p class="text-secondary">Users are responsible for the accuracy of all reporting. Any intentional misreporting of device status or unauthorized material modification is considered a violation of university policy and may result in account suspension.</p>
+                </section>
+
+                <section class="mb-5">
+                    <h5 class="text-white mb-3">3. Administrative Oversight</h5>
+                    <p class="text-secondary">All new accounts (excluding System Admins) must undergo a verification process. The system administrator reserves the right to approve, reject, or suspend accounts based on university compliance guidelines.</p>
+                </section>
+
+                <section class="mb-4">
+                    <h5 class="text-white mb-3">4. System Integrity</h5>
+                    <p class="text-secondary">The code and design of this system are the property of the National Maintenance Grid. Any attempt to reverse engineer or bypass security features (OTP, JWT) will lead to permanent prohibition.</p>
+                </section>
+
+                <div class="mt-5 pt-4 border-top">
+                    <a th:href="@{/}" class="btn btn-outline-violet px-4">Accept & Continue</a>
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
+    </div>
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>

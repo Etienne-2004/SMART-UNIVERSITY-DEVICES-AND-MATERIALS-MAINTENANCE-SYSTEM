@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Privacy Policy')}"></head>
+<body class="app-body">
+    <aside th:replace="~{fragments/layout :: sidebar('none')}"></aside>
+    <div class="main-content">
+        <nav th:replace="~{fragments/layout :: navbar('Privacy Policy')}"></nav>
+        <main class="page-content">
+            <div class="panel p-5">
+                <h2 class="mb-4 font-sg text-indigo border-bottom pb-2">Privacy Policy</h2>
+                <p class="text-secondary fw-500 mb-4">Last Updated: March 14, 2026</p>
+                
+                <section class="mb-5">
+                    <h5 class="text-white mb-3">1. Information Collection</h5>
+                    <p class="text-secondary">Smart University MMS collects personal information such as full name, email address, university affiliation, and phone number upon registration. This data is essential for maintaining accountability in device and material management.</p>
+                </section>
+
+                <section class="mb-5">
+                    <h5 class="text-white mb-3">2. Data Usage</h5>
+                    <p class="text-secondary">Your information is used to personalize your dashboard, facilitate communication regarding maintenance requests, and ensure system security via Two-Factor Authentication (OTP). We do not share your data with external third parties without administrative consent.</p>
+                </section>
+
+                <section class="mb-5">
+                    <h5 class="text-white mb-3">3. Security Protocals</h5>
+                    <p class="text-secondary">We implement high-level encryption for all user passwords (BCrypt) and secure all API interactions. Multi-Factor Authentication is enabled by default for all users to prevent unauthorized access to the national maintenance grid.</p>
+                </section>
+
+                <section class="mb-4">
+                    <h5 class="text-white mb-3">4. Contact</h5>
+                    <p class="text-secondary">For any inquiries regarding your data, contact the system administrator at <span class="text-cyan">support@smartuni.rw</span>.</p>
+                </section>
+
+                <div class="mt-5 pt-4 border-top">
+                    <a th:href="@{/}" class="btn btn-outline-indigo px-4">Return to Dashboard</a>
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
+    </div>
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>

@@ -1,0 +1,11 @@
+target/
+node_modules/
+.git/
+*.bat
+*.md
+server_log.txt
+app_log.txt
+runtime_log.txt
+startup_log*
+smart_university_database.sql
+smartuni.sql.backup

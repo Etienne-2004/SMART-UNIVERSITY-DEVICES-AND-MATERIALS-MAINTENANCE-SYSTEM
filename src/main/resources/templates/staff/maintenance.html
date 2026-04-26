@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head('My Maintenance')}"></head>
+
+<body class="app-body">
+
+    <!-- SIDEBAR -->
+    <aside th:replace="~{fragments/layout :: sidebar('maintenance')}"></aside>
+
+    <!-- MAIN -->
+    <div class="main-content" id="mainContent">
+        <!-- NAVBAR -->
+        <nav th:replace="~{fragments/layout :: navbar('My Maintenance')}"></nav>
+
+        <main class="page-content">
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show mb-4">
+                <i class="bi bi-check-circle-fill me-2"></i><span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Welcome Banner -->
+            <div class="nation-banner text-emerald">
+                <span class="nation-banner-icon">🔧</span>
+                <div>
+                    <div class="nation-banner-title"
+                        th:text="'My Maintenance Requests - ' + ${staff?.fullName ?: 'Staff Member'}">My Maintenance</div>
+                    <div class="nation-banner-sub" th:text="${staff?.university?.name ?: 'University Staff'}">
+                        Institute</div>
+                </div>
+                <div class="ms-auto d-flex gap-2">
+                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal">
+                        <i class="bi bi-megaphone"></i> Report Issue
+                    </button>
+                </div>
+            </div>
+
+            <!-- My Maintenance Requests -->
+            <div class="panel">
+                <div class="panel-head">
+                    <div class="panel-title">My Maintenance Requests</div>
+                    <div class="panel-subtitle" th:text="'Total: ' + ${#lists.size(myRequests)} + ' requests'">0 requests</div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Reported</th>
+                                <th>Assigned To</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="req : ${myRequests}">
+                                <td th:text="${req.id}">1</td>
+                                <td th:text="${req.requestType}">DEVICE</td>
+                                <td th:text="${#strings.abbreviate(req.issueDescription, 50)}">Issue description</td>
+                                <td th:text="${req.priority}">HIGH</td>
+                                <td>
+                                    <span class="badge"
+                                          th:classappend="${req.status.name() == 'PENDING' ? 'bg-warning' :
+                                                     req.status.name() == 'IN_PROGRESS' ? 'bg-info' :
+                                                     req.status.name() == 'COMPLETED' ? 'bg-success' : 'bg-secondary'}"
+                                          th:text="${#strings.replace(req.status.name(), '_', ' ')}">PENDING</span>
+                                </td>
+                                <td th:text="${#temporals.format(req.reportedAt, 'MMM dd, yyyy')}">Date</td>
+                                <td th:text="${req.assignedTechnician?.fullName ?: 'Not assigned'}">Technician</td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(myRequests)}">
+                                <td colspan="7" class="text-center text-muted">No maintenance requests found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Report Issue Modal -->
+            <div class="modal fade" id="reportModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <form th:action="@{/staff/maintenance/report}" method="post">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Report New Issue</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Issue Type</label>
+                                    <select name="requestType" class="form-select" required onchange="toggleDeviceMaterial(this.value)">
+                                        <option value="">Select Type</option>
+                                        <option value="DEVICE">Device Issue</option>
+                                        <option value="MATERIAL">Material Issue</option>
+                                    </select>
+                                </div>
+                                
+                                <div id="deviceFields" class="mb-3" style="display:none;">
+                                    <label class="form-label">Device Name</label>
+                                    <input type="text" name="deviceName" class="form-control" placeholder="e.g., Laptop, Printer" />
+                                </div>
+                                
+                                <div id="materialFields" class="mb-3" style="display:none;">
+                                    <label class="form-label">Material Name</label>
+                                    <input type="text" name="materialName" class="form-control" placeholder="e.g., Projector, Whiteboard" />
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Room Location</label>
+                                    <input type="text" name="roomLocation" class="form-control" placeholder="e.g., Room 101" required />
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Issue Description</label>
+                                    <textarea name="issueDescription" class="form-control" rows="3" placeholder="Describe the issue in detail" required></textarea>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Priority</label>
+                                    <select name="priority" class="form-select" required>
+                                        <option value="">Select Priority</option>
+                                        <option value="LOW">Low</option>
+                                        <option value="MEDIUM">Medium</option>
+                                        <option value="HIGH">High</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Submit Report</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- FOOTER -->
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
+    </div>
+
+    <!-- SCRIPTS -->
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+    
+    <script>
+        function toggleDeviceMaterial(type) {
+            document.getElementById('deviceFields').style.display = type === 'DEVICE' ? 'block' : 'none';
+            document.getElementById('materialFields').style.display = type === 'MATERIAL' ? 'block' : 'none';
+        }
+    </script>
+</body>
+
+</html>

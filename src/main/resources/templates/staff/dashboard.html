@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head('Staff Dashboard')}"></head>
+
+<body class="app-body">
+
+    <!-- SIDEBAR -->
+    <aside th:replace="~{fragments/layout :: sidebar('dashboard')}"></aside>
+
+    <!-- MAIN -->
+    <div class="main-content" id="mainContent">
+        <!-- NAVBAR -->
+        <nav th:replace="~{fragments/layout :: navbar('Staff Dashboard')}"></nav>
+
+        <main class="page-content">
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show mb-4">
+                <i class="bi bi-check-circle-fill me-2"></i><span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Welcome Banner -->
+            <div class="nation-banner text-emerald">
+                <span class="nation-banner-icon">🏛️</span>
+                <div>
+                    <div class="nation-banner-title"
+                        th:text="'Welcome back, ' + ${currentUser?.fullName ?: 'Staff Member'} + '!'">Welcome!</div>
+                    <div class="nation-banner-sub" th:text="${currentUser?.university?.name ?: 'University Staff'}">
+                        Institute</div>
+                </div>
+                <div class="ms-auto d-flex gap-2">
+                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal">
+                        <i class="bi bi-megaphone"></i> Report Issue
+                    </button>
+                </div>
+            </div>
+
+            <!-- Enhanced KPI Grid with Progress Indicators -->
+            <div class="kpi-grid mb-4">
+                <div class="kpi-card c-indigo">
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrap"><i class="bi bi-laptop-fill" style="color:#818cf8"></i></div>
+                        <div class="kpi-trend-badge up"><i class="bi bi-arrow-up-right"></i> Active</div>
+                    </div>
+                    <div class="kpi-value count-up" th:text="${myDevices.size()}">0</div>
+                    <div class="kpi-label">Registered Devices</div>
+                    <div class="kpi-sublabel">Assets assigned to me</div>
+                    <div class="kpi-progress">
+                        <div class="progress" style="height:4px">
+                            <div class="progress-bar bg-indigo" th:style="'width:' + ${myDevices.size() > 0 ? (myDevices.size() * 25) + '%' : '0%'}"></div>
+                        </div>
+                        <small class="text-muted" th:text="${myDevices.size()} + ' devices'">0 devices</small>
+                    </div>
+                </div>
+                <div class="kpi-card c-amber">
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrap"><i class="bi bi-box-fill" style="color:#fbbf24"></i></div>
+                        <div class="kpi-trend-badge up"><i class="bi bi-arrow-up-right"></i> Available</div>
+                    </div>
+                    <div class="kpi-value count-up" th:text="${myMaterials.size()}">0</div>
+                    <div class="kpi-label">Materials</div>
+                    <div class="kpi-sublabel">Learning resources</div>
+                    <div class="kpi-progress">
+                        <div class="progress" style="height:4px">
+                            <div class="progress-bar bg-amber" th:style="'width:' + ${myMaterials.size() > 0 ? (myMaterials.size() * 20) + '%' : '0%'}"></div>
+                        </div>
+                        <small class="text-muted" th:text="${myMaterials.size()} + ' materials'">0 materials</small>
+                    </div>
+                </div>
+                <div class="kpi-card c-cyan">
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrap"><i class="bi bi-tools" style="color:#22d3ee"></i></div>
+                        <div class="kpi-trend-badge up"><i class="bi bi-clock-history"></i> History</div>
+                    </div>
+                    <div class="kpi-value count-up" th:text="${myRequests.size()}">0</div>
+                    <div class="kpi-label">Total Requests</div>
+                    <div class="kpi-sublabel">Maintenance history</div>
+                    <div class="kpi-progress">
+                        <div class="progress" style="height:4px">
+                            <div class="progress-bar bg-cyan" th:style="'width:' + ${myRequests.size() > 0 ? (myRequests.size() * 15) + '%' : '0%'}"></div>
+                        </div>
+                        <small class="text-muted" th:text="${myRequests.size()} + ' reports'">0 reports</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Enhanced My Devices List with Status -->
+                <div class="col-lg-7">
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div class="panel-title">My Registered Devices</div>
+                            <div class="panel-actions">
+                                <a th:href="@{/staff/devices/add}" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-plus-lg"></i> Add New
+                                </a>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Location</th>
+                                        <th>Status</th>
+                                        <th>Last Check</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="d: ${myDevices}">
+                                        <td th:text="${d.deviceId}" class="fw-700"></td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <i class="bi bi-laptop-fill text-indigo"></i>
+                                                <span th:text="${d.deviceName}"></span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <i class="bi bi-geo-alt-fill text-muted"></i>
+                                                <span th:text="${d.roomLocation}"></span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-success d-flex align-items-center gap-1" style="width:fit-content">
+                                                <i class="bi bi-circle-fill" style="font-size:8px"></i>
+                                                <span>ACTIVE</span>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="small text-muted" th:text="${#temporals.format(d.createdAt, 'dd MMM')}">Date</div>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <button class="btn btn-outline-primary" title="Report Issue">
+                                                    <i class="bi bi-exclamation-triangle"></i>
+                                                </button>
+                                                <button class="btn btn-outline-info" title="Details">
+                                                    <i class="bi bi-eye"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(myDevices)}">
+                                        <td colspan="6" class="text-center p-4">
+                                            <div class="text-muted">
+                                                <i class="bi bi-laptop display-4 d-block mb-2"></i>
+                                                <strong>No devices registered</strong><br>
+                                                <small>Add your first device to get started</small>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enhanced Recent Activity/Reports -->
+                <div class="col-lg-5">
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div class="panel-title">Recent Reports</div>
+                            <div class="panel-actions">
+                                <span class="badge bg-secondary" th:text="${myRequests.size()} + ' total'">0 total</span>
+                            </div>
+                        </div>
+                        <div id="reportList" class="p-3">
+                            <div th:each="r: ${myRequests}" class="mb-3 p-3 border border-subtle rounded bg-glass">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="badge"
+                                        th:classappend="${r.priority?.name() == 'HIGH' ? 'bg-danger' : 
+                                                     r.priority?.name() == 'CRITICAL' ? 'bg-danger' : 'bg-warning'}"
+                                        th:text="${r.priority}">PRIO</span>
+                                    <small class="text-muted"
+                                        th:text="${#temporals.format(r.reportedAt, 'dd MMM HH:mm')}"></small>
+                                </div>
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <i class="bi bi-laptop-fill text-indigo" th:if="${r.requestType?.name() == 'DEVICE'}"></i>
+                                    <i class="bi bi-box-fill text-amber" th:if="${r.requestType?.name() == 'MATERIAL'}"></i>
+                                    <div class="fw-600" th:text="${r.requestType}">TYPE</div>
+                                </div>
+                                <div class="text-secondary small mb-2"
+                                    th:text="${#strings.abbreviate(r.issueDescription, 60)}">Desc</div>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="badge"
+                                        th:classappend="${r.status.name() == 'COMPLETED' ? 'bg-success' : 
+                                                     r.status.name() == 'IN_PROGRESS' ? 'bg-info' : 'bg-warning'}"
+                                        th:text="${#strings.replace(r.status.name(), '_', ' ')}">STATUS</span>
+                                    <div class="small text-muted" th:if="${r.assignedTechnician}" th:text="${r.assignedTechnician.fullName}">—</div>
+                                </div>
+                            </div>
+                            <div th:if="${#lists.isEmpty(myRequests)}" class="text-center p-4 text-muted">
+                                <div>
+                                    <i class="bi bi-clipboard-x display-4 d-block mb-2"></i>
+                                    <strong>No reports yet</strong><br>
+                                    <small>Report your first issue to get started</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Smart Quick Actions - Match Navigation -->
+            <div class="panel mb-4">
+                <div class="panel-head">
+                    <div class="panel-title"><i class="bi bi-lightning-charge-fill me-2" style="color:#fbbf24"></i>Smart
+                        Actions</div>
+                </div>
+                <div class="qaction-grid">
+                    <!-- Dynamic quick actions based on navigation items -->
+                    <th:block th:each="navItem : ${navigationItems}">
+                        <a th:href="${navItem.url}" class="qaction-item" th:title="${navItem.description}">
+                            <div class="qa-icon">
+                                <i th:class="'bi ' + ${navItem.icon}"></i>
+                                <span class="qa-badge" 
+                                      th:if="${navItem.badge != null}" 
+                                      th:text="${navItem.badge}">0</span>
+                            </div>
+                            <span th:text="${navItem.name}">Action</span>
+                        </a>
+                    </th:block>
+                </div>
+            </div>
+        </main>
+
+        <!-- FOOTER -->
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
+    </div>
+
+    <!-- Report Modal -->
+    <div class="modal fade" id="reportModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form th:action="@{/staff/maintenance/report}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title">New Maintenance Request</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Type</label>
+                            <select name="requestType" class="form-select" required onchange="toggleForm(this.value)">
+                                <option value="DEVICE">Device Issue</option>
+                                <option value="MATERIAL">Material Issue</option>
+                            </select>
+                        </div>
+                        <div class="mb-3" id="deviceSelect">
+                            <label class="form-label">Select Device</label>
+                            <select name="deviceId" class="form-select">
+                                <option th:each="d: ${myDevices}" th:value="${d.id}" th:text="${d.deviceName}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3 d-none" id="materialSelect">
+                            <label class="form-label">Select Material</label>
+                            <select name="materialId" class="form-select">
+                                <option th:each="m: ${myMaterials}" th:value="${m.id}" th:text="${m.materialName}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Priority</label>
+                            <select name="priority" class="form-select">
+                                <option value="LOW">Low</option>
+                                <option value="MEDIUM">Medium</option>
+                                <option value="HIGH">High</option>
+                                <option value="CRITICAL">Critical</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea name="description" class="form-control" rows="3" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Submit Report</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+    <script>
+        function toggleForm(val) {
+            document.getElementById('deviceSelect').classList.toggle('d-none', val !== 'DEVICE');
+            document.getElementById('materialSelect').classList.toggle('d-none', val !== 'MATERIAL');
+        }
+    </script>
+</body>
+
+</html>

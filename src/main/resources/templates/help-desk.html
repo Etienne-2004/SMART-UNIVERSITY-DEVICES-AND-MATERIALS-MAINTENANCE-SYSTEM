@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Help Desk')}"></head>
+<body class="app-body">
+    <aside th:replace="~{fragments/layout :: sidebar('help-desk')}"></aside>
+    <div class="main-content">
+        <nav th:replace="~{fragments/layout :: navbar('Help Desk & Reference')}"></nav>
+        <main class="page-content">
+            <div class="row g-4">
+                <!-- FAQ & Training Guide -->
+                <div class="col-lg-8">
+                    <div class="panel">
+                        <div class="panel-head">
+                            <h5 class="panel-title font-sg"><i class="bi bi-mortarboard-fill text-indigo me-2"></i>System Training & User Manual</h5>
+                        </div>
+                        <div class="p-4">
+                            <h6 class="text-white border-bottom border-indigo pb-2 mb-3">1. Account Activation Workflow</h6>
+                            <p class="text-secondary small">Every user (except Global Admins) follows this lifecycle to ensure national security:</p>
+                            <ul class="text-secondary small">
+                                <li><strong>Registration:</strong> Complete the form with your University/College details.</li>
+                                <li><strong>Email Verification:</strong> Enter the OTP sent to your email to prove ownership.</li>
+                                <li><strong>Admin Approval:</strong> Your account enters "PENDING_APPROVAL". A campus admin must verify your staff/student ID.</li>
+                                <li><strong>Activation:</strong> Once approved, you gain full access to your specific dashboard.</li>
+                            </ul>
+
+                            <h6 class="text-white border-bottom border-cyan pb-2 mt-4 mb-3">2. Asset Coding Standard (RP-International Pattern)</h6>
+                            <p class="text-secondary small">Use the following hierarchy for all new registrations:</p>
+                            <div class="bg-dark bg-opacity-50 p-3 rounded mb-3 border border-light border-opacity-10">
+                                <code class="text-indigo">INSTITUTION</code> / <code class="text-cyan">BLOCK</code> / <code class="text-violet">ROOM</code> / <code class="text-amber">ASSET_TYPE</code> + <code class="text-white">ID</code>
+                            </div>
+                            <p class="text-muted" style="font-size: 11px;">Example: <strong>RPKAR/HOSP/LAB01/PC05</strong> (RP Karongi, Hospitality, Lab 01, PC #5)</p>
+
+                            <h6 class="text-white border-bottom border-rose pb-2 mt-4 mb-3">3. Environmental Standards (Helpful Info)</h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="p-3 bg-glass border border-light border-opacity-10 rounded">
+                                        <div class="text-amber small fw-bold mb-1">🌡️ Optimal Temperature</div>
+                                        <div class="text-white fs-5 font-sg">18°C – 22°C</div>
+                                        <div class="text-muted small">Prevents hardware thermal throttling.</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-3 bg-glass border border-light border-opacity-10 rounded">
+                                        <div class="text-cyan small fw-bold mb-1">💧 Relative Humidity</div>
+                                        <div class="text-white fs-5 font-sg">35% – 55%</div>
+                                        <div class="text-muted small">Prevents static and corrosion.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel mt-4">
+                        <div class="panel-head">
+                            <h5 class="panel-title font-sg"><i class="bi bi-file-earmark-pdf text-rose me-2"></i>Reference Samples for RP Karongi</h5>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Asset Code Pattern</th>
+                                        <th>Description</th>
+                                        <th>Example</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-secondary" style="font-size: 13px;">
+                                    <tr>
+                                        <td class="text-indigo fw-bold">RPKAR/HOSP/F&B/SO01</td>
+                                        <td>RP Karongi, Hospitality, Food & Bev, Socket 01</td>
+                                        <td>Device</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-indigo fw-bold">RPKAR/ICT LAB01/TB01</td>
+                                        <td>RP Karongi, ICT Lab 01, Table 01</td>
+                                        <td>Material</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-indigo fw-bold">RPKAR/HOSP/PC01</td>
+                                        <td>RP Karongi, Hospitality, Personal Computer 01</td>
+                                        <td>Device</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-indigo fw-bold">RPKAR/MEE/PC02</td>
+                                        <td>Mechanical Block, PC 02</td>
+                                        <td>Device</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-3">
+                            <button class="btn btn-sm btn-outline-rose w-100 mt-2"><i class="bi bi-download me-2"></i>Download Full Training PDF</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Sidebar -->
+                <div class="col-lg-4">
+                    <div class="panel h-100">
+                        <div class="panel-head">
+                            <h5 class="panel-title font-sg">Direct Support</h5>
+                        </div>
+                        <div class="p-4 text-center">
+                            <div class="g-avatar mx-auto mb-3" style="width: 80px; height: 80px; font-size: 32px;">HE</div>
+                            <h6 class="text-white">Etienne Harindintwari</h6>
+                            <p class="text-muted small">System Architect & Support</p>
+                            
+                            <hr class="border-light opacity-10 my-4">
+                            
+                            <div class="d-grid gap-3">
+                                <a href="https://wa.me/250793719113" target="_blank" class="btn btn-emerald-soft">
+                                    <i class="bi bi-whatsapp me-2"></i> WhatsApp Support
+                                </a>
+                                <a href="mailto:harindintwarietiennee@gmail.com" class="btn btn-cyan-soft">
+                                    <i class="bi bi-envelope-fill me-2"></i> Email Administrator
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
+    </div>
+
+    <!-- SCRIPTS -->
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>

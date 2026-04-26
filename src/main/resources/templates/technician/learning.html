@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head('Learning Centre')}"></head>
+
+<body class="app-body">
+
+    <!-- SIDEBAR -->
+    <aside th:replace="~{fragments/layout :: sidebar('learning')}"></aside>
+
+    <!-- MAIN -->
+    <div class="main-content" id="mainContent">
+        <!-- NAVBAR -->
+        <nav th:replace="~{fragments/layout :: navbar('Learning Centre')}"></nav>
+
+        <main class="page-content">
+            <h2 class="mb-4 d-flex align-items-center">
+                <i class="bi bi-mortarboard-fill text-primary me-2"></i> 
+                Learning Centre
+            </h2>
+
+            <div class="welcome-panel mb-4">
+                <div class="panel-body">
+                    <h5 class="mb-3">Welcome to the Technician Learning Centre</h5>
+                    <p class="mb-0">Enhance your skills with our comprehensive training resources and certification programs.</p>
+                </div>
+            </div>
+
+            <!-- Learning Modules -->
+            <div class="row">
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="panel h-100">
+                        <div class="panel-head">
+                            <div class="panel-title">
+                                <i class="bi bi-gear-fill text-warning me-2"></i>
+                                Device Maintenance
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <p>Learn proper device maintenance procedures, troubleshooting techniques, and safety protocols.</p>
+                            <div class="mt-3">
+                                <span class="badge bg-primary">8 Modules</span>
+                                <span class="badge bg-success">4 Hours</span>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <button class="btn btn-primary btn-sm w-100">Start Learning</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="panel h-100">
+                        <div class="panel-head">
+                            <div class="panel-title">
+                                <i class="bi bi-box-seam-fill text-info me-2"></i>
+                                Material Handling
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <p>Master material inspection, repair techniques, and inventory management best practices.</p>
+                            <div class="mt-3">
+                                <span class="badge bg-primary">6 Modules</span>
+                                <span class="badge bg-success">3 Hours</span>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <button class="btn btn-primary btn-sm w-100">Start Learning</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="panel h-100">
+                        <div class="panel-head">
+                            <div class="panel-title">
+                                <i class="bi bi-shield-check-fill text-success me-2"></i>
+                                Safety Training
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <p>Essential safety protocols, emergency procedures, and workplace hazard identification.</p>
+                            <div class="mt-3">
+                                <span class="badge bg-primary">5 Modules</span>
+                                <span class="badge bg-success">2.5 Hours</span>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <button class="btn btn-primary btn-sm w-100">Start Learning</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="panel h-100">
+                        <div class="panel-head">
+                            <div class="panel-title">
+                                <i class="bi bi-tools-fill text-danger me-2"></i>
+                                Advanced Tools
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <p>Advanced troubleshooting tools, diagnostic equipment, and specialized repair techniques.</p>
+                            <div class="mt-3">
+                                <span class="badge bg-primary">7 Modules</span>
+                                <span class="badge bg-success">3.5 Hours</span>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <button class="btn btn-primary btn-sm w-100">Start Learning</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="panel h-100">
+                        <div class="panel-head">
+                            <div class="panel-title">
+                                <i class="bi bi-clipboard-data-fill text-secondary me-2"></i>
+                                Documentation
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <p>Proper report writing, documentation standards, and maintenance logging procedures.</p>
+                            <div class="mt-3">
+                                <span class="badge bg-primary">4 Modules</span>
+                                <span class="badge bg-success">2 Hours</span>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <button class="btn btn-primary btn-sm w-100">Start Learning</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="panel h-100">
+                        <div class="panel-head">
+                            <div class="panel-title">
+                                <i class="bi bi-award-fill text-warning me-2"></i>
+                                Certification
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <p>Professional certification programs, assessment criteria, and career advancement paths.</p>
+                            <div class="mt-3">
+                                <span class="badge bg-primary">3 Modules</span>
+                                <span class="badge bg-success">1.5 Hours</span>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <button class="btn btn-warning btn-sm w-100">View Certifications</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Section -->
+            <div class="panel">
+                <div class="panel-head">
+                    <div class="panel-title">Your Learning Progress</div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="progress-circle">
+                                <div class="progress-value">75%</div>
+                            </div>
+                            <h6 class="mt-2">Overall Progress</h6>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <h4 class="text-primary">12</h4>
+                            <h6>Modules Completed</h6>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <h4 class="text-warning">4</h4>
+                            <h6>In Progress</h6>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <h4 class="text-success">2</h4>
+                            <h6>Certifications Earned</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
+    </div>
+
+    <!-- SCRIPTS -->
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+
+</html>
